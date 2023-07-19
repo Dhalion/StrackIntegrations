@@ -1,0 +1,31 @@
+{
+  "name": "strack/integrations",
+  "description": "StrackIntegrations",
+  "type": "shopware-platform-plugin",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "AGIQON GmbH",
+      "email": "web@agiqon.de",
+      "homepage": "https://www.agiqon-shopware.de/"
+    }
+  ],
+  "require": {
+    "shopware/core": "^6.5.3",
+    "shopware/administration": "*",
+    "shopware/storefront": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "StrackIntegrations\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "StrackIntegrations\\StrackIntegrations",
+    "label": {
+      "de-DE": "StrackIntegrations",
+      "en-GB": "StrackIntegrations"
+    }
+  }
+}
