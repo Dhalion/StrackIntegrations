@@ -36,6 +36,11 @@ class ApiConfig extends AbstractConfig
         return $this->addStartingSlash((string)$this->getConfigValue('priceEndpoint'));
     }
 
+    public function getPriceSoapAction(): string
+    {
+        return (string)$this->getConfigValue('priceSoapAction');
+    }
+
     private function removeTrailingSlash(string $url): string
     {
         return rtrim($url, '/');

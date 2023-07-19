@@ -34,5 +34,10 @@
             <label>Price Endpoint</label>
             <label lang="de-DE">Preis Endpunkt</label>
         </input-field>
+        <input-field type="text">
+            <name>priceSoapAction</name>
+            <label>Price SOAPAction</label>
+            <label lang="de-DE">Preis SOAPAction</label>
+        </input-field>
     </card>
 </config>
