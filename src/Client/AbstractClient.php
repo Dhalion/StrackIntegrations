@@ -14,14 +14,11 @@ readonly abstract class AbstractClient
     const CACHE_TOKEN_KEY = 'strack_integrations.access_token';
     const TEMPLATE_PLACEHOLDER = '%%%template_json%%%';
 
-    private Client $client;
-
     public function __construct(
         protected ApiConfig $apiConfig,
-        private CacheInterface $cache
-    ) {
-        $this->client = new Client();
-    }
+        private CacheInterface $cache,
+        private Client $client
+    ) { }
 
     public function post(string $endpoint, string $soapAction, array $jsonParams): array
     {

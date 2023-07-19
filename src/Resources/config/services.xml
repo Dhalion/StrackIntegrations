@@ -10,7 +10,7 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>
 
-        <!--        Plugin Config -->
+        <!--        API Config -->
         <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\ApiConfig" />
 
         <!--       Monolog Logger -->
@@ -23,5 +23,16 @@
         <service id="StrackIntegrations\Logger\Logger" public="false">
             <argument type="service" id="strack_integrations.logger" />
         </service>
+
+        <!--        Abstract Client -->
+        <service id="StrackIntegrations\Client\AbstractClient" abstract="true">
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="cache.system" />
+            <argument type="service" id="GuzzleHttp\Client" />
+        </service>
+
+        <!--        Price Client -->
+        <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+
     </services>
 </container>
