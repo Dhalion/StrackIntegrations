@@ -12,5 +12,16 @@
 
         <!--        Plugin Config -->
         <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\ApiConfig" />
+
+        <!--       Monolog Logger -->
+        <service id="strack_integrations.logger" class="Monolog\Logger" public="false">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">strack_integrations</argument>
+        </service>
+
+        <!--        Logger Wrapper -->
+        <service id="StrackIntegrations\Logger\Logger" public="false">
+            <argument type="service" id="strack_integrations.logger" />
+        </service>
     </services>
 </container>
