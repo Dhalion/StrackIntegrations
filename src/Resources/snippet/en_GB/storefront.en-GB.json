@@ -1,0 +1,8 @@
+{
+    "StrackIntegrations":{
+        "productPage": {
+            "customerPriceError": "Your individual price for this article cannot be displayed. Please contact shop administrator.",
+            "customerPriceSuccess": "Individual price has been loaded."
+        }
+    }
+}

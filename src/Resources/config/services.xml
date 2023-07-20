@@ -33,6 +33,13 @@
         <!--        Price Client -->
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
 
+        <!--        Product Page Subscriber -->
+        <service id="StrackIntegrations\Subscriber\ProductPageSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <!--        Test Controller -->
         <service id="StrackIntegrations\Controller\TestController" public="true">
             <argument type="service" id="StrackIntegrations\Client\PriceClient"/>

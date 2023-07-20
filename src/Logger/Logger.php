@@ -12,9 +12,9 @@ class Logger
         protected MonologLogger $logger
     ){}
 
-    public function logException(Exception $exception, array $additionalData = []): void
+    public function logException(string $callingClass, Exception $exception, array $additionalData = []): void
     {
-        $exceptionArray = $this->buildExceptionMessage($exception, $additionalData);
+        $exceptionArray = $this->buildExceptionMessage($callingClass, $exception, $additionalData);
 
         if($exception instanceof BadResponseException) {
             $exceptionArray = array_merge(
@@ -26,9 +26,10 @@ class Logger
         $this->logger->error(json_encode($exceptionArray));
     }
 
-    private function buildExceptionMessage(Exception $exception, array $additionalData): array
+    private function buildExceptionMessage(string $callingClass, Exception $exception, array $additionalData): array
     {
         $exceptionArray = [
+            'executor' => $callingClass,
             'message' => $exception->getMessage(),
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
