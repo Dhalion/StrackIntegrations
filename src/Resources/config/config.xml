@@ -25,10 +25,6 @@
             <name>apiDomain</name>
             <label>API Domain</label>
         </input-field>
-        <input-field type="url">
-            <name>apiDomain</name>
-            <label>API Domain</label>
-        </input-field>
         <input-field type="text">
             <name>priceEndpoint</name>
             <label>Price Endpoint</label>

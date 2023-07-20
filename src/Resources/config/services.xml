@@ -11,7 +11,7 @@
         </service>
 
         <!--        API Config -->
-        <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\ApiConfig" />
+        <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\AbstractConfig" />
 
         <!--       Monolog Logger -->
         <service id="strack_integrations.logger" class="Monolog\Logger" public="false">
@@ -28,11 +28,18 @@
         <service id="StrackIntegrations\Client\AbstractClient" abstract="true">
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
             <argument type="service" id="cache.system" />
-            <argument type="service" id="GuzzleHttp\Client" />
         </service>
 
         <!--        Price Client -->
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+
+        <!--        Test Controller -->
+        <service id="StrackIntegrations\Controller\TestController" public="true">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
 
     </services>
 </container>
