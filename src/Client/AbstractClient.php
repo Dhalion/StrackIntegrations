@@ -26,6 +26,8 @@ readonly abstract class AbstractClient
 
     protected function post(string $endpoint, string $soapAction, string $envelope, array $jsonParams): SimpleXMLElement
     {
+        $this->apiConfig->validateConfig();
+
         $response = $this->client->post($this->apiConfig->getApiDomain() . $endpoint, [
            'headers' => [
                'Authorization' => 'Bearer ' . $this->getAccessToken(),

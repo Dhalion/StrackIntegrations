@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Config;
 
+use StrackIntegrations\Exception\MissingPluginConfigException;
+
 class ApiConfig extends AbstractConfig
 {
     public function getClientId(): string
@@ -41,6 +43,37 @@ class ApiConfig extends AbstractConfig
         return (string)$this->getConfigValue('priceSoapAction');
     }
 
+    public function validateConfig(): void
+    {
+        if(!$this->getClientId()) {
+            throw new MissingPluginConfigException('clientId');
+        }
+
+        if(!$this->getClientSecret()) {
+            throw new MissingPluginConfigException('clientSecret');
+        }
+
+        if(!$this->getAccessTokenUri()) {
+            throw new MissingPluginConfigException('accessTokenUri');
+        }
+
+        if(!$this->getScope()) {
+            throw new MissingPluginConfigException('scope');
+        }
+
+        if(!$this->getApiDomain()) {
+            throw new MissingPluginConfigException('apiDomain');
+        }
+
+        if(!$this->getPriceEndpoint()) {
+            throw new MissingPluginConfigException('priceEndpoint');
+        }
+
+        if(!$this->getPriceSoapAction()) {
+            throw new MissingPluginConfigException('priceSoapAction');
+        }
+    }
+
     private function removeTrailingSlash(string $url): string
     {
         return rtrim($url, '/');
@@ -54,4 +87,10 @@ class ApiConfig extends AbstractConfig
 
         return '/' . $path;
     }
+
+    private function isUrlValid(string $url): bool
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+    }
+
 }
