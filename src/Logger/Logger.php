@@ -3,6 +3,7 @@
 namespace StrackIntegrations\Logger;
 
 use Exception;
+use GuzzleHttp\Exception\BadResponseException;
 use Monolog\Logger as MonologLogger;
 
 class Logger
@@ -13,11 +14,16 @@ class Logger
 
     public function logException(Exception $exception, array $additionalData = []): void
     {
-        $this->logger->error(
-            json_encode(
-                $this->buildExceptionMessage($exception, $additionalData)
-            )
-        );
+        $exceptionArray = $this->buildExceptionMessage($exception, $additionalData);
+
+        if($exception instanceof BadResponseException) {
+            $exceptionArray = array_merge(
+                $exceptionArray,
+                $this->buildGuzzleException($exception)
+            );
+        }
+
+        $this->logger->error(json_encode($exceptionArray));
     }
 
     private function buildExceptionMessage(Exception $exception, array $additionalData): array
@@ -37,5 +43,16 @@ class Logger
         }
 
         return $exceptionArray;
+    }
+
+    private function buildGuzzleException(BadResponseException $exception): array
+    {
+        return [
+            'requestUri' => $exception->getRequest()->getUri()->getPath(),
+            'requestContent' => $exception->getRequest()->getBody()->getContents(),
+            'requestMethod' => $exception->getRequest()->getMethod(),
+            'responseContent' => $exception->getResponse()->getBody()->getContents(),
+            'responseCode' => $exception->getResponse()->getStatusCode()
+        ];
     }
 }
