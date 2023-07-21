@@ -10,7 +10,7 @@ use Shopware\Core\Checkout\Cart\CartDataCollectorInterface;
 use Shopware\Core\Checkout\Cart\CartProcessorInterface;
 use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
-use Shopware\Core\Checkout\Cart\Price\QuantityPriceCalculator;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use StrackIntegrations\Client\PriceClient;
@@ -51,7 +51,6 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
                 $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $productNumber, $lineItem->getQuantity());
                 $calculatedPrice = $this->priceTransformer->getCalculatedPrice($customerPrice, $lineItem->getQuantity(), $price->getTaxRules());
 
-                // we have to set a value for each line item to prevent duplicate queries in next calculation
                 $data->set($key, $calculatedPrice);
             } catch (\Exception $exception) {
                 $this->logger->logException(self::class, $exception);
@@ -72,6 +71,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
                 continue;
             }
 
+            /** @var CalculatedPrice $newPrice */
             $newPrice = $data->get($key);
 
             $definition = new QuantityPriceDefinition(
