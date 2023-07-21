@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Live Price API Config</title>
+        <title lang="de-DE">Live-Preis-API-Konfiguration</title>
+        <input-field type="text">
+            <name>clientId</name>
+            <label>Client ID</label>
+        </input-field>
+        <input-field type="password">
+            <name>clientSecret</name>
+            <label>Client Secret</label>
+        </input-field>
+        <input-field type="url">
+            <name>accessTokenUri</name>
+            <label>Access Token URI</label>
+        </input-field>
+        <input-field type="url">
+            <name>scope</name>
+            <label>Scope URI</label>
+        </input-field>
+        <input-field type="url">
+            <name>apiDomain</name>
+            <label>API Domain</label>
+        </input-field>
+        <input-field type="text">
+            <name>priceEndpoint</name>
+            <label>Price Endpoint</label>
+            <label lang="de-DE">Preis Endpunkt</label>
+        </input-field>
+        <input-field type="text">
+            <name>priceSoapAction</name>
+            <label>Price SOAPAction</label>
+            <label lang="de-DE">Preis SOAPAction</label>
+        </input-field>
+    </card>
+</config>

@@ -1,0 +1,11 @@
+.strack-customer-price-icon {
+    cursor: help;
+
+    &.strack-customer-price-error {
+        color: #e8e800 !important;
+    }
+
+    &.strack-customer-price-success {
+        color: #529e52 !important;
+    }
+}

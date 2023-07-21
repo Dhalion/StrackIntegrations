@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!--        Abstract Config -->
+        <service id="StrackIntegrations\Config\AbstractConfig" abstract="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+        </service>
+
+        <!--        API Config -->
+        <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\AbstractConfig" />
+
+        <!--       Monolog Logger -->
+        <service id="strack_integrations.logger" class="Monolog\Logger" public="false">
+            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+            <argument type="string">strack_integrations</argument>
+        </service>
+
+        <!--        Logger Wrapper -->
+        <service id="StrackIntegrations\Logger\Logger" public="false">
+            <argument type="service" id="strack_integrations.logger" />
+        </service>
+
+        <!--        Abstract Client -->
+        <service id="StrackIntegrations\Client\AbstractClient" abstract="true">
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="cache.system" />
+        </service>
+
+        <!--        Price Client -->
+        <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+
+        <!--        Price Transformer -->
+        <service id="StrackIntegrations\Service\PriceTransformer">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
+        </service>
+
+        <!--        Product Page Subscriber -->
+        <service id="StrackIntegrations\Subscriber\ProductPageSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!--        Customer Price Processor -->
+        <service id="StrackIntegrations\Processor\CustomerPriceProcessor">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+
+            <tag name="shopware.cart.processor" priority="4500" />
+            <tag name="shopware.cart.collector" priority="4500" />
+        </service>
+
+        <!--        Test Controller -->
+        <service id="StrackIntegrations\Controller\TestController" public="true">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+    </services>
+</container>
