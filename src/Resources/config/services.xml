@@ -46,6 +46,16 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <!--        Customer Price Processor -->
+        <service id="StrackIntegrations\Processor\CustomerPriceProcessor">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+
+            <tag name="shopware.cart.processor" priority="4500" />
+            <tag name="shopware.cart.collector" priority="4500" />
+        </service>
+
         <!--        Test Controller -->
         <service id="StrackIntegrations\Controller\TestController" public="true">
             <argument type="service" id="StrackIntegrations\Client\PriceClient"/>

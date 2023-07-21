@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace StrackIntegrations\Service;
 
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use StrackIntegrations\Struct\CustomerListPrice;
 use StrackIntegrations\Struct\SalesPrice;
 
@@ -17,24 +17,21 @@ readonly class PriceTransformer
     ) {
     }
 
-    public function getProductCalculatedPrice(SalesPrice $customerPrice, SalesChannelProductEntity $product): CalculatedPrice
+    public function getCalculatedPrice(SalesPrice $customerPrice, int $quantity, TaxRuleCollection $taxRules): CalculatedPrice
     {
-        $startingQuantity = $product->getMinPurchase() ?: 1;
         $totalPrice = $customerPrice->getTotalPrice();
 
         $listPrice = null;
         if($customerPrice->getPercentageLineDiscount()) {
             $listPrice = new CustomerListPrice(
-                $customerPrice->getUnitPrice() * $startingQuantity,
-                $customerPrice->getUnitPrice() * $startingQuantity - $totalPrice,
+                $customerPrice->getUnitPrice() * $quantity,
+                $customerPrice->getUnitPrice() * $quantity - $totalPrice,
                 $customerPrice->getPercentageLineDiscount()
             );
         }
 
-        $taxRules = $product->getCalculatedPrice()->getTaxRules();
-
         return new CalculatedPrice(
-            $totalPrice / $startingQuantity,
+            $totalPrice / $quantity,
             $totalPrice,
            $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules),
             $taxRules,
