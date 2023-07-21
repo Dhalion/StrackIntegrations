@@ -21,7 +21,7 @@ class TestController extends StorefrontController
     public function generateProductDataFeed(): Response
     {
         try {
-            $test = $this->priceClient->getSalesPrice('10001868', '173297', 3);
+            $test = $this->priceClient->getSalesPrice('10001868', '173297', 4);
             var_dump($test);
             exit;
         } catch(BadResponseException $exception) {

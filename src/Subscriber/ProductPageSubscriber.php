@@ -42,7 +42,11 @@ readonly class ProductPageSubscriber implements EventSubscriberInterface
 
         try {
             $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $startingQuantity);
-            $product->setCalculatedPrice($this->priceTransformer->getCalculatedPrice($customerPrice, $product->getMinPurchase() ?: 1, $product->getCalculatedPrice()->getTaxRules()));
+            $product->setCalculatedPrice($this->priceTransformer->getCalculatedPrice(
+                $customerPrice,
+                $product->getMinPurchase() ?: 1,
+                $product->getCalculatedPrice()->getTaxRules()
+            ));
         } catch(\Exception $exception) {
             $this->logger->logException(self::class, $exception);
             $event->getPage()->assign(['customerPriceError' => true]);

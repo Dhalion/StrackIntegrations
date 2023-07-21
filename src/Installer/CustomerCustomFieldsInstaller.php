@@ -9,8 +9,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\Plugin\Context\InstallContext;
-use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\CustomField\CustomFieldTypes;
 use StrackIntegrations\Util\CustomFieldsInterface;
@@ -23,12 +21,12 @@ readonly class CustomerCustomFieldsInstaller
     ) {
     }
 
-    public function installCustomFieldSet(InstallContext $context): void
+    public function installCustomFieldSet(Context $context): void
     {
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        $fieldSetId = $this->getCustomFieldSetId($context->getContext());
+        $fieldSetId = $this->getCustomFieldSetId($context);
 
         if (!$fieldSetId) {
             $customFieldSetRepository->create([
@@ -60,19 +58,19 @@ readonly class CustomerCustomFieldsInstaller
                         ]
                     ]
                 ]
-            ], $context->getContext());
+            ], $context);
         }
 
     }
 
-    public function uninstallCustomFieldSet(UninstallContext $context): void
+    public function uninstallCustomFieldSet(Context $context): void
     {
         /** @var EntityRepository $customFieldSetRepository */
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
-        $fieldSetId = $this->getCustomFieldSetId($context->getContext());
+        $fieldSetId = $this->getCustomFieldSetId($context);
         if ($fieldSetId) {
-            $customFieldSetRepository->delete([['id' => $fieldSetId]], $context->getContext());
+            $customFieldSetRepository->delete([['id' => $fieldSetId]], $context);
         }
     }
 
