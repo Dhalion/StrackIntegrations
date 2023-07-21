@@ -20,21 +20,24 @@ readonly class PriceTransformer
     public function getProductCalculatedPrice(SalesPrice $customerPrice, SalesChannelProductEntity $product): CalculatedPrice
     {
         $startingQuantity = $product->getMinPurchase() ?: 1;
+        $totalPrice = $customerPrice->getTotalPrice();
 
         $listPrice = null;
         if($customerPrice->getPercentageLineDiscount()) {
             $listPrice = new CustomerListPrice(
                 $customerPrice->getUnitPrice() * $startingQuantity,
-                $customerPrice->getUnitPrice() * $startingQuantity - $customerPrice->getTotalPrice(),
+                $customerPrice->getUnitPrice() * $startingQuantity - $totalPrice,
                 $customerPrice->getPercentageLineDiscount()
             );
         }
 
+        $taxRules = $product->getCalculatedPrice()->getTaxRules();
+
         return new CalculatedPrice(
-            $customerPrice->getTotalPrice(),
-            $customerPrice->getTotalPrice(),
-            $product->getCalculatedPrice()->getCalculatedTaxes(), //todo
-            $product->getCalculatedPrice()->getTaxRules(),
+            $totalPrice / $startingQuantity,
+            $totalPrice,
+           $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules),
+            $taxRules,
             (int)$customerPrice->getQuantity(),
             null,
             $listPrice
