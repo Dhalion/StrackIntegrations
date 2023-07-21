@@ -22,7 +22,17 @@ class TestController extends StorefrontController
     {
         try {
             $test = $this->priceClient->getSalesPrice('10001868', '173297', 4);
-            var_dump($test);
+            var_dump(json_encode([
+                'productNumber' => $test->getProductNumber(),
+                'unitPrice' => $test->getUnitPrice(),
+                'quantity' => $test->getQuantity(),
+                'percentageLineDiscount' => $test->getPercentageLineDiscount(),
+                'totalPrice' => $test->getTotalPrice(),
+                'totalPriceWithVar' => $test->getTotalPriceWithVat(),
+                'debtorNumber' => $test->getDebtorNumber(),
+                'currencyIso' => $test->getCurrencyIso(),
+                'isBrutto' => $test->isBrutto()
+            ]));
             exit;
         } catch(BadResponseException $exception) {
             var_dump($exception->getResponse()->getBody()->getContents());
