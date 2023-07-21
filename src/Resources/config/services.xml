@@ -33,9 +33,15 @@
         <!--        Price Client -->
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
 
+        <!--        Price Transformer -->
+        <service id="StrackIntegrations\Service\PriceTransformer">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
+        </service>
+
         <!--        Product Page Subscriber -->
         <service id="StrackIntegrations\Subscriber\ProductPageSubscriber">
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
             <tag name="kernel.event_subscriber"/>
         </service>
