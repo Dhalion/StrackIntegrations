@@ -10,7 +10,7 @@ use StrackIntegrations\Struct\SalesPrice;
 
 readonly class PriceClient extends AbstractClient
 {
-    public function getSalesPrice(string $debtorNumber, string $productNumber, int $quantity = 1): ?SalesPrice
+    public function getSalesPrice(string $debtorNumber, string $productNumber, string $currencyIso, int $quantity = 1): ?SalesPrice
     {
         $response = $this->post(
             $this->apiConfig->getPriceEndpoint(),
@@ -19,6 +19,7 @@ readonly class PriceClient extends AbstractClient
             [
                 'customerId' => $debtorNumber,
                 'itemNo' => $productNumber,
+                'currencyIso' => $currencyIso,
                 'quantity' => $quantity
             ]
         );

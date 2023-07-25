@@ -41,7 +41,7 @@ readonly class ProductPageSubscriber implements EventSubscriberInterface
         $startingQuantity = $product->getMinPurchase() ?: 1;
 
         try {
-            $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $startingQuantity);
+            $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $event->getSalesChannelContext()->getCurrency()->getIsoCode(), $startingQuantity);
             $product->setCalculatedPrice($this->priceTransformer->getCalculatedPrice(
                 $customerPrice,
                 $product->getMinPurchase() ?: 1,
