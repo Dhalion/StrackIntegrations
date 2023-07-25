@@ -48,7 +48,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
 
             try {
                 $key = $this->buildKey($lineItem->getId());
-                $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $productNumber, $lineItem->getQuantity());
+                $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $productNumber, $context->getCurrency()->getIsoCode(), $lineItem->getQuantity());
                 $calculatedPrice = $this->priceTransformer->getCalculatedPrice($customerPrice, $lineItem->getQuantity(), $price->getTaxRules());
 
                 $data->set($key, $calculatedPrice);
