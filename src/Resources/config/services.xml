@@ -56,6 +56,21 @@
             <tag name="shopware.cart.collector" priority="4500" />
         </service>
 
+        <!--        Customer Price Controller -->
+        <service id="StrackIntegrations\Controller\CustomerPriceController" public="true">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="sales_channel.product.repository"/>
+            <argument type="service" id="Shopware\Storefront\Page\Product\ProductPageLoader"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
         <!--        Test Controller -->
         <service id="StrackIntegrations\Controller\TestController" public="true">
             <argument type="service" id="StrackIntegrations\Client\PriceClient"/>

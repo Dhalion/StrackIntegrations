@@ -1,0 +1,8 @@
+{% sw_extends '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
+
+{% block page_product_detail_buy_quantity_input_group %}
+    {% if context.customer and context.customer.customFields.strack_debtor_number is defined and page.product %}
+        <div data-quantity-selector-customer-price="true" data-product-id="{{ page.product.id }}" data-customer-price-endpoint="{{ url('frontend.StrackIntegrations.customerPrice') }}" data-is-component="0"></div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

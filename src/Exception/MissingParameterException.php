@@ -6,8 +6,12 @@ namespace StrackIntegrations\Exception;
 
 class MissingParameterException extends \Exception
 {
-    public function __construct(string $parameterName, string $xmlContent)
+    public function __construct(string $parameterName, ?string $xmlContent = null)
     {
-        parent::__construct(sprintf('Missing response parameter: %s. XML: %s', $parameterName, $xmlContent));
+        if($xmlContent) {
+            parent::__construct(sprintf('Missing response parameter: %s. XML: %s', $parameterName, $xmlContent));
+        } else {
+            parent::__construct(sprintf('Missing response parameter: %s.', $parameterName));
+        }
     }
 }

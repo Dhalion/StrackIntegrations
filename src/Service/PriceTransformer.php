@@ -17,7 +17,7 @@ readonly class PriceTransformer
     ) {
     }
 
-    public function getCalculatedPrice(SalesPrice $customerPrice, int $quantity, TaxRuleCollection $taxRules): CalculatedPrice
+    public function getCalculatedPrice(SalesPrice $customerPrice, int $quantity, TaxRuleCollection $taxRules, bool $displayTotalPrice = false): CalculatedPrice
     {
         $totalPrice = $customerPrice->getTotalPrice();
 
@@ -31,7 +31,7 @@ readonly class PriceTransformer
         }
 
         return new CalculatedPrice(
-            $totalPrice / $quantity,
+            $displayTotalPrice ? $totalPrice : $totalPrice / $quantity,
             $totalPrice,
            $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules),
             $taxRules,
