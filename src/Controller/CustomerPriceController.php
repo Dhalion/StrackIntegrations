@@ -9,7 +9,6 @@ use Shopware\Core\Content\Product\Exception\ProductNotFoundException;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Product\ProductPageLoader;
@@ -29,7 +28,6 @@ class CustomerPriceController extends StorefrontController
         protected PriceClient $priceClient,
         protected PriceTransformer $priceTransformer,
         protected Logger $logger,
-        protected SalesChannelRepository $productRepository,
         protected ProductPageLoader $productPageLoader
     ) {
     }
