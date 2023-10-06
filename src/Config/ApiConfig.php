@@ -43,6 +43,16 @@ class ApiConfig extends AbstractConfig
         return (string)$this->getConfigValue('priceSoapAction');
     }
 
+    public function isTestModeOn(): bool
+    {
+        return (bool)$this->getConfigValue('testModeOn');
+    }
+
+    public function getTestModeDebtorNumber(): string
+    {
+        return (string)$this->getConfigValue('testModeDebtorNumber');
+    }
+
     public function validateConfig(): void
     {
         if(!$this->getClientId()) {

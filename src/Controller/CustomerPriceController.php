@@ -8,6 +8,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Product\ProductPageLoader;
 use StrackIntegrations\Client\PriceClient;
+use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Exception\MissingDebtorNumberException;
 use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Logger\Logger;
@@ -23,7 +24,8 @@ class CustomerPriceController extends StorefrontController
         protected PriceClient $priceClient,
         protected PriceTransformer $priceTransformer,
         protected Logger $logger,
-        protected ProductPageLoader $productPageLoader
+        protected ProductPageLoader $productPageLoader,
+        protected ApiConfig $apiConfig
     ) {
     }
 
@@ -42,7 +44,9 @@ class CustomerPriceController extends StorefrontController
             throw new MissingParameterException('quantity');
         }
 
-        $debtorNumber = $context->getCustomer()->getCustomFields()[CustomFieldsInterface::CUSTOMER_DEBTOR_NUMBER] ?? null;
+
+        $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $context->getCustomer()->getId();
+
         if(!$debtorNumber) {
             throw new MissingDebtorNumberException($context->getCustomer()->getCustomerNumber());
         }
@@ -53,12 +57,7 @@ class CustomerPriceController extends StorefrontController
         $product = $page->getProduct();
 
         $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $context->getCurrency()->getIsoCode(), $quantity);
-        $product->setCalculatedPrice($this->priceTransformer->getCalculatedPrice(
-            $customerPrice,
-            $quantity,
-            $product->getCalculatedPrice()->getTaxRules(),
-            true
-        ));
+        $this->priceTransformer->setCalculatedPrice($customerPrice, $product);
 
         $template = $isComponent ?
             '@Storefront/storefront/component/buy-widget/buy-widget-price.html.twig' :

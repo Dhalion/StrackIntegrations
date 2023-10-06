@@ -12,10 +12,7 @@ use StrackIntegrations\Struct\SalesPriceCollection;
 readonly class PriceClient extends AbstractClient
 {
     /**
-     * @param string $debtorNumber
      * @param array<string, int> $productNumbers Key: product number, value: quantity
-     * @param string $currencyIso
-     * @return SalesPriceCollection
      */
     public function getSalesPrices(string $debtorNumber, array $productNumbers, string $currencyIso): SalesPriceCollection
     {

@@ -43,6 +43,16 @@
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
             <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!--        Product Page Subscriber -->
+        <service id="StrackIntegrations\Subscriber\VariantsTableSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -51,6 +61,7 @@
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
             <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
 
             <tag name="shopware.cart.processor" priority="4500" />
             <tag name="shopware.cart.collector" priority="4500" />
@@ -62,6 +73,7 @@
             <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
             <argument type="service" id="Shopware\Storefront\Page\Product\ProductPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

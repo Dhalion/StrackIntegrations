@@ -35,5 +35,18 @@
             <label>Price SOAPAction</label>
             <label lang="de-DE">Preis SOAPAction</label>
         </input-field>
+        <input-field type="bool">
+            <name>testModeOn</name>
+            <defaultValue>0</defaultValue>
+            <label>Test mode active</label>
+            <label lang="de-DE">Test Modus Aktiv</label>
+            <helpText>If active, all price calls will use debtor number from below</helpText>
+            <helpText lang="de-DE">Wenn aktiviert, werden alle Preisabfragen die Debitorennummer von unten verwenden.</helpText>
+        </input-field>
+        <input-field type="text">
+            <name>testModeDebtorNumber</name>
+            <label>Debtor number (test only)</label>
+            <label lang="de-DE">Debitorennummer (Test)</label>
+        </input-field>
     </card>
 </config>

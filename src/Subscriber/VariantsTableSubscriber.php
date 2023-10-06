@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Subscriber;
 
-use Shopware\Storefront\Page\Product\ProductPageLoadedEvent;
 use StrackIntegrations\Client\PriceClient;
+use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
-use StrackIntegrations\Util\CustomFieldsInterface;
+use StrackVariantsTable\Pagelet\VariantsTableRowsPageletLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class VariantsTableSubscriber implements EventSubscriberInterface
@@ -16,43 +16,42 @@ readonly class VariantsTableSubscriber implements EventSubscriberInterface
     public function __construct(
         private PriceClient $priceClient,
         private PriceTransformer $priceTransformer,
-        private Logger $logger
+        private Logger $logger,
+        private ApiConfig $apiConfig
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            ProductPageLoadedEvent::class => 'addCustomerPrices'
+            VariantsTableRowsPageletLoadedEvent::class => 'addCustomerPrices'
         ];
     }
 
-    public function addCustomerPrices(ProductPageLoadedEvent $event): void
+    public function addCustomerPrices(VariantsTableRowsPageletLoadedEvent $event): void
     {
         $customer = $event->getSalesChannelContext()->getCustomer();
 
-        if (!$customer || !isset($customer->getCustomFields()[CustomFieldsInterface::CUSTOMER_DEBTOR_NUMBER])) {
+        if (!$customer) {
             return;
         }
 
-        $debtorNumber = $customer->getCustomFields()[CustomFieldsInterface::CUSTOMER_DEBTOR_NUMBER];
-        $product = $event->getPage()->getProduct();
+        $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $customer->getId();
 
-        $startingQuantity = $product->getMinPurchase() ?: 1;
+        $variants = $event->getPagelet()->getVariants();
+
+        $priceRequestBatch = [];
+
+        foreach($variants as $variant) {
+            $priceRequestBatch[$variant->getProductNumber()] = $variant->getMinPurchase() ?: 1;
+        }
 
         try {
-            $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $event->getSalesChannelContext()->getCurrency()->getIsoCode(), $startingQuantity);
-            $product->setCalculatedPrice($this->priceTransformer->getCalculatedPrice(
-                $customerPrice,
-                $product->getMinPurchase() ?: 1,
-                $product->getCalculatedPrice()->getTaxRules()
-            ));
+            $customerPrices = $this->priceClient->getSalesPrices($debtorNumber, $priceRequestBatch, $event->getSalesChannelContext()->getCurrency()->getIsoCode());
+            $this->priceTransformer->setCalculatedPrices($customerPrices, $variants);
         } catch(\Exception $exception) {
             $this->logger->logException(self::class, $exception);
-            $event->getPage()->assign(['customerPriceError' => true]);
             return;
         }
-
-        $event->getPage()->assign(['customerPriceSuccess' => true]);
     }
 }

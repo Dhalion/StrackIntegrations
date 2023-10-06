@@ -14,12 +14,12 @@ class StrackIntegrations extends Plugin
 {
     public function install(InstallContext $installContext): void
     {
-        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
+//        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
     }
 
     public function update(UpdateContext $updateContext): void
     {
-        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
+//        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
     }
 
     public function uninstall(UninstallContext $uninstallContext): void
