@@ -7,9 +7,75 @@ namespace StrackIntegrations\Client;
 use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Exception\NoReturnValueException;
 use StrackIntegrations\Struct\SalesPrice;
+use StrackIntegrations\Struct\SalesPriceCollection;
 
 readonly class PriceClient extends AbstractClient
 {
+    /**
+     * @param string $debtorNumber
+     * @param array<string, int> $productNumbers Key: product number, value: quantity
+     * @param string $currencyIso
+     * @return SalesPriceCollection
+     */
+    public function getSalesPrices(string $debtorNumber, array $productNumbers, string $currencyIso): SalesPriceCollection
+    {
+        $requestData = [];
+        foreach($productNumbers as $productNumber => $quantity) {
+            $requestData[] = [
+               'customerId' => $debtorNumber,
+               'itemNo' => $productNumber,
+               'currencyIso' => $currencyIso,
+               'quantity' => $quantity
+            ];
+        }
+
+        $response = $this->post(
+            $this->apiConfig->getPriceEndpoint(),
+            $this->apiConfig->getPriceSoapAction(),
+            $this->getSalesPriceEnvelope(),
+            $requestData
+        );
+
+        $namespaces = $response->getNamespaces(true);
+        $swWebServices = $response->children($namespaces['Soap'])->Body->children($namespaces['']);
+
+        if (!isset($swWebServices->GetSalesPrice_Result->return_value)) {
+            throw new NoReturnValueException($response->asXML());
+        }
+
+        $returnValue = (string)$swWebServices->GetSalesPrice_Result->return_value;
+        $jsonResponse = json_decode($returnValue, true, 512, JSON_THROW_ON_ERROR);
+
+        if(empty($jsonResponse)) {
+            return new SalesPriceCollection();
+        }
+
+        $salesPriceCollection = new SalesPriceCollection();
+
+        foreach($jsonResponse as $product) {
+            try {
+                $this->validateResponse($product, $response->asXML());
+            } catch(MissingParameterException) {
+                continue;
+            }
+
+            $salesPrice = (new SalesPrice())
+                ->setProductNumber($product['No.'])
+                ->setDebtorNumber($product['Sell-to Customer No.'])
+                ->setUnitPrice($product['Unit Price'])
+                ->setQuantity($product['Quantity'])
+                ->setPercentageLineDiscount($product['Line Discount %'])
+                ->setTotalPrice($product['Line Amount'])
+                ->setTotalPriceWithVat($product['Amount Including VAT'])
+                ->setIsBrutto($product['Prices Including VAT'])
+                ->setCurrencyIso($product['Currency Code']);
+
+            $salesPriceCollection->add($salesPrice);
+        }
+
+        return $salesPriceCollection;
+    }
+
     public function getSalesPrice(string $debtorNumber, string $productNumber, string $currencyIso, int $quantity = 1): ?SalesPrice
     {
         $response = $this->post(

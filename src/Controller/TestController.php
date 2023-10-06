@@ -18,8 +18,8 @@ class TestController extends StorefrontController
     ) {
     }
 
-    #[Route('/StrackIntegrations/test', name: 'frontend.StrackIntegrations.test', defaults: ['_routeScope' => ['storefront'], 'csrf_protected' => false], methods: ['GET'])]
-    public function generateProductDataFeed(SalesChannelContext $context): Response
+    #[Route('/StrackIntegrations/singlePriceTest', name: 'frontend.StrackIntegrations.singlePriceTest', defaults: ['_routeScope' => ['storefront'], 'csrf_protected' => false], methods: ['GET'])]
+    public function singlePriceTest(SalesChannelContext $context): Response
     {
         try {
             $test = $this->priceClient->getSalesPrice('10001868', '173297', $context->getCurrency()->getIsoCode(), 4);
@@ -34,6 +34,36 @@ class TestController extends StorefrontController
                 'currencyIso' => $test->getCurrencyIso(),
                 'isBrutto' => $test->isBrutto()
             ]));
+            exit;
+        } catch(BadResponseException $exception) {
+            var_dump($exception->getResponse()->getBody()->getContents());
+            exit;
+        }
+    }
+
+    #[Route('/StrackIntegrations/batchPriceTest', name: 'frontend.StrackIntegrations.batchPriceTest', defaults: ['_routeScope' => ['storefront'], 'csrf_protected' => false], methods: ['GET'])]
+    public function batchPriceTest(SalesChannelContext $context): Response
+    {
+        try {
+            $test = $this->priceClient->getSalesPrices('10001868', ['173297' => 1, '85119' => 1, '85122' => 1], $context->getCurrency()->getIsoCode());
+//            $notWorking = $this->priceClient->getSalesPrices('10001868', ['173297' => 1, '85119' => 1, '85122' => 1, '932853842538' => 2], $context->getCurrency()->getIsoCode());
+            $outputArray = [];
+
+            foreach($test as $row) {
+                $outputArray[] = [
+                    'productNumber' => $row->getProductNumber(),
+                    'unitPrice' => $row->getUnitPrice(),
+                    'quantity' => $row->getQuantity(),
+                    'percentageLineDiscount' => $row->getPercentageLineDiscount(),
+                    'totalPrice' => $row->getTotalPrice(),
+                    'totalPriceWithVar' => $row->getTotalPriceWithVat(),
+                    'debtorNumber' => $row->getDebtorNumber(),
+                    'currencyIso' => $row->getCurrencyIso(),
+                    'isBrutto' => $row->isBrutto()
+                ];
+            }
+
+            var_dump(json_encode($outputArray));
             exit;
         } catch(BadResponseException $exception) {
             var_dump($exception->getResponse()->getBody()->getContents());
