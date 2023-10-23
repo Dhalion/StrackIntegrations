@@ -38,6 +38,17 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
         </service>
 
+        <!--        Product Entity Subscriber -->
+        <service id="StrackIntegrations\Subscriber\ProductEntityLoadedSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!--        Currency Twig Filter      -->
+        <service id="StrackIntegrations\Core\Framework\Adapter\Twig\Filter\CurrencyFilter" decorates="Shopware\Core\Framework\Adapter\Twig\Filter\CurrencyFilter">
+            <argument type="service" id="Shopware\Core\System\Currency\CurrencyFormatter"/>
+            <argument type="service" id="translator" />
+        </service>
+
         <!--        Product Page Subscriber -->
         <service id="StrackIntegrations\Subscriber\ProductPageSubscriber">
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
