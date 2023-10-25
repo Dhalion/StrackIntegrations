@@ -2,12 +2,10 @@
 
 namespace StrackIntegrations\Core\Framework\Adapter\Twig\Filter;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\System\Currency\CurrencyFormatter;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Page;
-use Shopware\Storefront\Page\Product\ProductPage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CurrencyFilter extends \Shopware\Core\Framework\Adapter\Twig\Filter\CurrencyFilter
@@ -29,7 +27,8 @@ class CurrencyFilter extends \Shopware\Core\Framework\Adapter\Twig\Filter\Curren
         // Only affect saleschannel
         if (array_key_exists('context', $twigContext) && $twigContext['context'] instanceof SalesChannelContext) {
             $salesChannelContext = $twigContext['context'];
-            $userLoggedIn = $salesChannelContext->getCustomer();
+            $twigCustomer = $twigContext['customer'] ?? null;
+            $userLoggedIn = $salesChannelContext->getCustomer() || $twigCustomer;
 
             // The status for the price-request is not available everywhere, where a price is displayed, thats why we have to assume it is successful, until it expliclity wasn't.
             $priceRequestSuccessful = true;
@@ -44,7 +43,7 @@ class CurrencyFilter extends \Shopware\Core\Framework\Adapter\Twig\Filter\Curren
                 $priceRequestSuccessful = false;
             }
 
-            if (!$userLoggedIn || !$priceRequestSuccessful) {
+            if (!$userLoggedIn || !$priceRequestSuccessful || $price == 0) {
                 return $this->translator->trans("StrackIntegrations.placeholder.priceOnlyOnRequest");
             }
         }
