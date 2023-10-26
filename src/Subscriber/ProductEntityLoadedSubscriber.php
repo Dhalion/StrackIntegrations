@@ -15,7 +15,7 @@ class ProductEntityLoadedSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ProductEvents::PRODUCT_LOADED_EVENT => ['onProductLoaded', 100]
+            'sales_channel' . ProductEvents::PRODUCT_LOADED_EVENT => ['onProductLoaded', 100]
         ];
     }
 
