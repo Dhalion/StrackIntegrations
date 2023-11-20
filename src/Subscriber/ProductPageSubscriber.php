@@ -46,10 +46,6 @@ readonly class ProductPageSubscriber implements EventSubscriberInterface
             $this->priceTransformer->setCalculatedPrice($customerPrice, $product);
         } catch(\Exception $exception) {
             $this->logger->logException(self::class, $exception);
-            $event->getPage()->assign(['customerPriceError' => true]);
-            return;
         }
-
-        $event->getPage()->assign(['customerPriceSuccess' => true]);
     }
 }

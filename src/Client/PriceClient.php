@@ -53,6 +53,10 @@ readonly class PriceClient extends AbstractClient
             try {
                 $this->validateResponse($product, $response->asXML());
             } catch(MissingParameterException) {
+                if(isset($product['No.'])) {
+                    $salesPriceCollection->add(SalesPrice::createErrorSalesPrice($product['No.']));
+                }
+
                 continue;
             }
 
@@ -65,7 +69,8 @@ readonly class PriceClient extends AbstractClient
                 ->setTotalPrice($product['Line Amount'])
                 ->setTotalPriceWithVat($product['Amount Including VAT'])
                 ->setIsBrutto($product['Prices Including VAT'])
-                ->setCurrencyIso($product['Currency Code']);
+                ->setCurrencyIso($product['Currency Code'])
+                ->setHasError(false);
 
             $salesPriceCollection->add($salesPrice);
         }
@@ -97,7 +102,15 @@ readonly class PriceClient extends AbstractClient
         $returnValue = (string)$swWebServices->GetSalesPrice_Result->return_value;
         $jsonResponse = json_decode($returnValue, true, 512, JSON_THROW_ON_ERROR);
 
-        $this->validateResponse($jsonResponse, $response->asXML());
+        try {
+            $this->validateResponse($jsonResponse, $response->asXML());
+        } catch(MissingParameterException $exception) {
+            if (isset($jsonResponse['No.'])) {
+                return SalesPrice::createErrorSalesPrice($jsonResponse['No.']);
+            } else {
+                throw $exception;
+            }
+        }
 
         return (new SalesPrice())
             ->setProductNumber($jsonResponse['No.'])
@@ -108,7 +121,8 @@ readonly class PriceClient extends AbstractClient
             ->setTotalPrice($jsonResponse['Line Amount'])
             ->setTotalPriceWithVat($jsonResponse['Amount Including VAT'])
             ->setIsBrutto($jsonResponse['Prices Including VAT'])
-            ->setCurrencyIso($jsonResponse['Currency Code']);
+            ->setCurrencyIso($jsonResponse['Currency Code'])
+            ->setHasError(false);
     }
 
     private function getSalesPriceEnvelope(): string

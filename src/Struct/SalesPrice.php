@@ -17,6 +17,7 @@ class SalesPrice extends Struct
     private string $debtorNumber;
     private string $currencyIso;
     private bool $isBrutto;
+    private bool $hasError;
 
     public function getProductNumber(): string
     {
@@ -115,5 +116,30 @@ class SalesPrice extends Struct
     {
         $this->isBrutto = $isBrutto;
         return $this;
+    }
+
+    public function hasError(): bool
+    {
+        return $this->hasError;
+    }
+
+    public function setHasError(bool $hasError): SalesPrice
+    {
+        $this->hasError = $hasError;
+        return $this;
+    }
+
+    public static function createErrorSalesPrice(string $productNumber): SalesPrice
+    {
+        return (new self())
+            ->setProductNumber($productNumber)
+            ->setUnitPrice(0.0)
+            ->setQuantity(0.0)
+            ->setPercentageLineDiscount(0.0)
+            ->setTotalPrice(0.0)
+            ->setDebtorNumber('')
+            ->setCurrencyIso('')
+            ->setIsBrutto(false)
+            ->setHasError(true);
     }
 }

@@ -21,7 +21,7 @@ class ProductEntityLoadedSubscriber implements EventSubscriberInterface
 
     public function onProductLoaded(EntityLoadedEvent $event): void
     {
-        // only affect saleschannel
+        // only affects sales channel source
         if (!($event->getContext()->getSource() instanceof SalesChannelApiSource))
             return;
 
@@ -80,11 +80,5 @@ class ProductEntityLoadedSubscriber implements EventSubscriberInterface
                 $cheapestPrice->setNet(0.0);
             }
         }
-
-        /*************************************************************************************
-         * Add extension to product, to have a reliable boolean to use/modify in later processes
-         *************************************************************************************/
-        $product->addArrayExtension('strackIntegration', ['productPriceReady' => false]);
     }
-
 }

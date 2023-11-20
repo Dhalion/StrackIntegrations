@@ -18,7 +18,6 @@ use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackIntegrations\Struct\SalesPrice;
-use StrackIntegrations\Util\CustomFieldsInterface;
 
 readonly class CustomerPriceProcessor implements CartDataCollectorInterface, CartProcessorInterface
 {
@@ -79,10 +78,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
                 $calculatedPrice = $this->priceTransformer->getCalculatedPrice($customerPrice, $lineItem->getQuantity(), $price->getTaxRules());
 
                 $data->set($key, $calculatedPrice);
-            } catch (\Exception $exception) {
-                $this->logger->logException(self::class, $exception);
-                $lineItem->setPayloadValue('customerPriceError', true);
-                continue;
+            } catch (\Exception) {
             }
         }
     }
@@ -109,7 +105,6 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
 
             $product->setPrice($newPrice);
             $product->setPriceDefinition($definition);
-            $product->setPayloadValue('customerPriceSuccess', true);
         }
     }
 

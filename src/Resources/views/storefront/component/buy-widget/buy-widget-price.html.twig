@@ -2,11 +2,11 @@
 
 {% block buy_widget_price_content %}
     {{ parent() }}
-    {% if page.customerPriceError %}
+    {% if page.product.calculatedPrice.hasError is defined and page.product.calculatedPrice.hasError is true %}
         <div class="strack-customer-price-icon strack-customer-price-error" title="{{ 'StrackIntegrations.productPage.customerPriceError'|trans|sw_sanitize }}">
             {% sw_icon 'warning' %}
         </div>
-    {% elseif page.customerPriceSuccess %}
+    {% else %}
         <div class="strack-customer-price-icon strack-customer-price-success" title="{{ 'StrackIntegrations.productPage.customerPriceSuccess'|trans|sw_sanitize }}">
             {% sw_icon 'checkmark-circle' %}
         </div>
