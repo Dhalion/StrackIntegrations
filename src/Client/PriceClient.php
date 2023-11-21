@@ -70,7 +70,7 @@ readonly class PriceClient extends AbstractClient
                 ->setTotalPriceWithVat($product['Amount Including VAT'])
                 ->setIsBrutto($product['Prices Including VAT'])
                 ->setCurrencyIso($product['Currency Code'])
-                ->setHasError($jsonResponse['Unit Price'] <= 0);
+                ->setHasError($product['Unit Price'] <= 0);
 
             $salesPriceCollection->add($salesPrice);
         }
