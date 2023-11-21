@@ -72,6 +72,10 @@ readonly class PriceClient extends AbstractClient
                 ->setCurrencyIso($product['Currency Code'])
                 ->setHasError(false);
 
+            if($salesPrice->getUnitPrice() <= 0) {
+                $salesPrice->setHasError(true);
+            }
+
             $salesPriceCollection->add($salesPrice);
         }
 
@@ -122,7 +126,7 @@ readonly class PriceClient extends AbstractClient
             ->setTotalPriceWithVat($jsonResponse['Amount Including VAT'])
             ->setIsBrutto($jsonResponse['Prices Including VAT'])
             ->setCurrencyIso($jsonResponse['Currency Code'])
-            ->setHasError(false);
+            ->setHasError($jsonResponse['Unit Price'] <= 0);
     }
 
     private function getSalesPriceEnvelope(): string
