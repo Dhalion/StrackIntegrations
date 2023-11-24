@@ -43,7 +43,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         $priceBatchPayload = [];
 
         foreach ($lineItems as $lineItem) {
-            $productNumber = $lineItem->getPayloadValue('productNumber');
+            $productNumber = (string)$lineItem->getPayloadValue('productNumber');
             $price = $lineItem->getPrice();
 
             if (!$productNumber || !$price || $lineItem->getType() !== LineItem::PRODUCT_LINE_ITEM_TYPE) {

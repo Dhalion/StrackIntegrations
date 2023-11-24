@@ -27,6 +27,7 @@
         <!--        Abstract Client -->
         <service id="StrackIntegrations\Client\AbstractClient" abstract="true">
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
             <argument type="service" id="cache.system" />
         </service>
 

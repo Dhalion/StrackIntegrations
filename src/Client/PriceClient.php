@@ -17,27 +17,40 @@ readonly class PriceClient extends AbstractClient
     public function getSalesPrices(string $debtorNumber, array $productNumbers, string $currencyIso): SalesPriceCollection
     {
         $requestData = [];
+
         foreach($productNumbers as $productNumber => $quantity) {
             $requestData[] = [
                'customerId' => $debtorNumber,
-               'itemNo' => $productNumber,
+               'itemNo' => (string)$productNumber,
                'currencyIso' => $currencyIso,
                'quantity' => $quantity
             ];
         }
 
-        $response = $this->post(
-            $this->apiConfig->getPriceEndpoint(),
-            $this->apiConfig->getPriceSoapAction(),
-            $this->getSalesPriceEnvelope(),
-            $requestData
-        );
+        try {
+            $response = $this->post(
+                $this->apiConfig->getPriceEndpoint(),
+                $this->apiConfig->getPriceSoapAction(),
+                $this->getSalesPriceEnvelope(),
+                $requestData
+            );
+        } catch(\Exception $exception) {
+            $this->logger->logException(self::class, $exception);
+            $salesPriceCollection = new SalesPriceCollection();
+            foreach($productNumbers as $productNumber => $quantity) {
+                $salesPriceCollection->add(SalesPrice::createErrorSalesPrice((string)$productNumber));
+            }
+
+            return $salesPriceCollection;
+        }
 
         $namespaces = $response->getNamespaces(true);
         $swWebServices = $response->children($namespaces['Soap'])->Body->children($namespaces['']);
 
         if (!isset($swWebServices->GetSalesPrice_Result->return_value)) {
-            throw new NoReturnValueException($response->asXML());
+            $exception = new NoReturnValueException($response->asXML());
+            $this->logger->logException(self::class, $exception);
+            throw $exception;
         }
 
         $returnValue = (string)$swWebServices->GetSalesPrice_Result->return_value;
@@ -80,23 +93,31 @@ readonly class PriceClient extends AbstractClient
 
     public function getSalesPrice(string $debtorNumber, string $productNumber, string $currencyIso, int $quantity = 1): ?SalesPrice
     {
-        $response = $this->post(
-            $this->apiConfig->getPriceEndpoint(),
-            $this->apiConfig->getPriceSoapAction(),
-            $this->getSalesPriceEnvelope(),
-            [
-                'customerId' => $debtorNumber,
-                'itemNo' => $productNumber,
-                'currencyIso' => $currencyIso,
-                'quantity' => $quantity
-            ]
-        );
+        try {
+            $response = $this->post(
+                $this->apiConfig->getPriceEndpoint(),
+                $this->apiConfig->getPriceSoapAction(),
+                $this->getSalesPriceEnvelope(),
+                [
+                    'customerId' => $debtorNumber,
+                    'itemNo' => $productNumber,
+                    'currencyIso' => $currencyIso,
+                    'quantity' => $quantity
+                ]
+            );
+        } catch(\Exception $exception) {
+            $this->logger->logException(self::class, $exception);
+            return SalesPrice::createErrorSalesPrice($productNumber);
+        }
+
 
         $namespaces = $response->getNamespaces(true);
         $swWebServices = $response->children($namespaces['Soap'])->Body->children($namespaces['']);
 
         if (!isset($swWebServices->GetSalesPrice_Result->return_value)) {
-            throw new NoReturnValueException($response->asXML());
+            $exception = new NoReturnValueException($response->asXML());
+            $this->logger->logException(self::class, $exception);
+            throw $exception;
         }
 
         $returnValue = (string)$swWebServices->GetSalesPrice_Result->return_value;

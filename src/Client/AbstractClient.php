@@ -7,6 +7,7 @@ namespace StrackIntegrations\Client;
 use GuzzleHttp\Client;
 use SimpleXMLElement;
 use StrackIntegrations\Config\ApiConfig;
+use StrackIntegrations\Logger\Logger;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -19,7 +20,8 @@ readonly abstract class AbstractClient
 
     public function __construct(
         protected ApiConfig $apiConfig,
-        private CacheInterface $cache
+        protected Logger $logger,
+        private CacheInterface $cache,
     ) {
         $this->client = new Client();
     }
