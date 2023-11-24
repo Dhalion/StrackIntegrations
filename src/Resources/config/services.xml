@@ -13,10 +13,19 @@
         <!--        API Config -->
         <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\AbstractConfig" />
 
+        <!--        Monolog Handler -->
+        <service id="strack_integrations.monolog.handler" class="Monolog\Handler\RotatingFileHandler">
+            <argument>%kernel.logs_dir%/%kernel.environment%.strack_integrations.log</argument>
+            <argument>14</argument>
+            <argument>warning</argument>
+        </service>
+
         <!--       Monolog Logger -->
-        <service id="strack_integrations.logger" class="Monolog\Logger" public="false">
-            <factory service="Shopware\Core\Framework\Log\LoggerFactory" method="createRotating"/>
+        <service id="strack_integrations.logger" class="Monolog\Logger">
             <argument type="string">strack_integrations</argument>
+            <call method="pushHandler">
+                <argument type="service" id="strack_integrations.monolog.handler"/>
+            </call>
         </service>
 
         <!--        Logger Wrapper -->
