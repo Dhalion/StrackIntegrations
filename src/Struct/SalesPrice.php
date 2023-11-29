@@ -48,6 +48,9 @@ class SalesPrice extends Struct
 
     public function setQuantity(float $quantity): SalesPrice
     {
+        if ($quantity < 1) {
+            $quantity = 1;
+        }
         $this->quantity = $quantity;
         return $this;
     }
@@ -134,7 +137,7 @@ class SalesPrice extends Struct
         return (new self())
             ->setProductNumber($productNumber)
             ->setUnitPrice(0.0)
-            ->setQuantity(0.0)
+            ->setQuantity(1)
             ->setPercentageLineDiscount(0.0)
             ->setTotalPrice(0.0)
             ->setDebtorNumber('')
