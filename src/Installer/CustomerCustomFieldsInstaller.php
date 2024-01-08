@@ -55,6 +55,16 @@ readonly class CustomerCustomFieldsInstaller
                                     'en-GB' => 'Debtor number'
                                 ]
                             ]
+                        ], [
+                            'name' => CustomFieldsInterface::CUSTOMER_MINIMUM_ORDER_VALUE,
+                            'type' => CustomFieldTypes::FLOAT,
+                            'config' => [
+                                'customFieldPosition' => 200,
+                                'label' => [
+                                    'de-DE' => 'Mindestbestellwert',
+                                    'en-GB' => 'Minimum order value'
+                                ]
+                            ]
                         ]
                     ]
                 ]
