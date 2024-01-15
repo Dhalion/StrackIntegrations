@@ -1,0 +1,25 @@
+{% sw_extends '@Storefront/storefront/component/checkout/offcanvas-cart.html.twig'%}
+
+{% block component_offcanvas_cart_header %}
+  {{ parent() }}
+  <div class="dropdown">
+    <button class="btn btn-secondary btn-sm dropdown-toggle"
+            type="button"
+            id="strack-integrations-cart-export-dropdown"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+    >
+      Warenkorb exportieren
+    </button>
+    <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+      <li>
+        <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="csv">CSV</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="xlsx">XLSX</a>
+      </li>
+    </ul>
+    
+  </div>
+
+{% endblock %}

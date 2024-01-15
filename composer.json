@@ -14,7 +14,8 @@
   "require": {
     "shopware/core": "^6.5.3",
     "shopware/administration": "*",
-    "shopware/storefront": "*"
+    "shopware/storefront": "*",
+    "avadim/fast-excel-writer": "^4.11"
   },
   "autoload": {
     "psr-4": {
@@ -26,6 +27,11 @@
     "label": {
       "de-DE": "StrackIntegrations",
       "en-GB": "StrackIntegrations"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "symfony/runtime": false
     }
   }
 }
