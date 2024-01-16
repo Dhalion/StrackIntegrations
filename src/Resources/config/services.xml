@@ -111,5 +111,17 @@
             </call>
         </service>
 
+        <!--        Cart Export Controller -->
+        <service id="StrackIntegrations\Controller\CartExportController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+            <argument id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" type="service"/>
+            <argument type="service" id="product.repository"/>
+        </service>
+
     </services>
 </container>

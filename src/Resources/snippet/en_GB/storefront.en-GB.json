@@ -6,6 +6,11 @@
         },
         "placeholder": {
             "priceOnlyOnRequest": "Request this price"
+        },
+        "cart-export": {
+            "export-btn": "Export Cart",
+            "as-csv": "as CSV",
+            "as-xlsx": "as XLSX"
         }
     }
 }
