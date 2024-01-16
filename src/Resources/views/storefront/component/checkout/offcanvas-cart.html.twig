@@ -1,25 +1,27 @@
 {% sw_extends '@Storefront/storefront/component/checkout/offcanvas-cart.html.twig'%}
 
-{% block component_offcanvas_cart_header %}
+{% block component_offcanvas_cart_header_item_counter %}
   {{ parent() }}
-  <div class="dropdown">
-    <button class="btn btn-secondary btn-sm dropdown-toggle"
+  {% if isCartNotEmpty %}
+    <button class="btn btn-link btn-sm col-1 ps-0"
             type="button"
             id="strack-integrations-cart-export-dropdown"
             data-bs-toggle="dropdown"
-            aria-expanded="false"
-    >
-      Warenkorb exportieren
+            aria-expanded="false">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="grey" class="bi bi-box-arrow-down" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M3.5 10a.5.5 0 0 1-.5-.5v-8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 0 0 1h2A1.5 1.5 0 0 0 14 9.5v-8A1.5 1.5 0 0 0 12.5 0h-9A1.5 1.5 0 0 0 2 1.5v8A1.5 1.5 0 0 0 3.5 11h2a.5.5 0 0 0 0-1z"/>
+          <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708z"/>
+        </svg>
     </button>
-    <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-      <li>
-        <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="csv">CSV</a>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="xlsx">XLSX</a>
-      </li>
-    </ul>
-    
-  </div>
-
+    <div class="dropdown">
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li>
+          <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="csv">CSV</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="#" data-strack-cart-export-button data-strack-cart-export-type="xlsx">XLSX</a>
+        </li>
+      </ul>
+    </div>
+  {% endif %}
 {% endblock %}
