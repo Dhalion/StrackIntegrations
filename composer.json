@@ -28,10 +28,5 @@
       "de-DE": "StrackIntegrations",
       "en-GB": "StrackIntegrations"
     }
-  },
-  "config": {
-    "allow-plugins": {
-      "symfony/runtime": false
-    }
   }
 }
