@@ -7,7 +7,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Checkout\Cart\LineItem\LineItemCollection;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -16,6 +15,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 use avadim\FastExcelWriter\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use \Agiqon\SNProductCustomizer\Service\ProductCustomizationService;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Cart\CartCalculator;
 
 enum ExportType: string {
     case CSV = "csv";
@@ -24,10 +26,9 @@ enum ExportType: string {
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class CartExportController extends StorefrontController {
-
     public function __construct(
-        private CartService $cartService,
-        private EntityRepository $productRepository
+        private ?ProductCustomizationService $customizationService,
+        private CartCalculator $cartCalculator
     ) {
     }
 
@@ -42,35 +43,34 @@ class CartExportController extends StorefrontController {
             ExportType::XLSX->value => ExportType::XLSX,
             default => ExportType::CSV
         };
-        $list = $this->generateCartList($cart->getLineItems());
+        $calculatedCart = $this->cartCalculator->calculate($cart, $context);
+        $itemsList = $this->generateCartList($calculatedCart);
 
         // if no items in cart, return 204
-        if (count($list) === 0) {
+        if (count($itemsList) === 0) {
             return new StreamedResponse(status: 204);
         }
 
         try {
             if ($exportType === ExportType::CSV) {
-                return $this->createAndSendCSV($list);
+                return $this->createAndSendCSV($itemsList);
             } else {
-                return $this->createAndSendXLSX($list);
+                return $this->createAndSendXLSX($itemsList);
             }
         } catch (\Exception $e) {
             return new StreamedResponse(status: 500);
         }
     }
 
-    private function generateCartList(LineItemCollection $items): array {
+    private function generateCartList(Cart $cart): array {
         $list = [];
-        foreach ($items as $item) {
-            // Fetching custom fields from product adds ~10% to execution time
-            $product = $this->getProductFromId($item->getReferencedId());
-            $customFields = $product?->getCustomFields() ?? [];
+        $items = $cart->getLineItems();
 
+        foreach ($items as $item) {
             $list[] = [
-                'artikelnummer' => $product->getProductNumber(),
+                'artikelnummer' => $item->getPayloadValue('productNumber') ?? null,
                 'name' => $item->getLabel(),
-                'bestellschluessel' => $customFields['strack_bestellschluessel'] ?? null,
+                'bestellschluessel' => $this->generateOrderKey($item),
                 'menge' => $item->getQuantity(),
                 'einzelpreis' => $item->getPrice()->getUnitPrice(),
                 'gesamtpreis' => $item->getPrice()->getTotalPrice(),
@@ -144,5 +144,40 @@ class CartExportController extends StorefrontController {
     private function getProductFromId(string $id): ProductEntity | null {
         $criteria = new Criteria([$id]);
         return $this->productRepository->search($criteria, Context::createDefaultContext())->first() ?? null;
+    }
+
+    private function generateOrderKey(LineItem $lineItem): string | null {
+        // Check if customizationService (Dependency) is available
+        if (!$this->customizationService) {
+            return "Error: customizationService not available";
+        }
+
+        $purchaseId = $lineItem->getPayloadValue('customFields')['strack_bestellschluessel'] ?? null;
+        $strackExtraLineItemInfo = $lineItem->getExtension('strackExtraLineItemInfo');
+
+        if(!$purchaseId || !$strackExtraLineItemInfo) {
+            return null;
+        }
+
+        $isProductCustomized = $lineItem->hasExtension('customization') && $this->customizationService->isProductCustomized(
+                $lineItem->getExtension('customization'),
+                $lineItem->getExtension('strackExtraLineItemInfo'));
+
+        if($isProductCustomized) {
+            return $this->customizationService->getCustomizationConvertedLineItem(
+                $purchaseId,
+                $lineItem->getExtension('customization'),
+                $lineItem->getExtension('strackExtraLineItemInfo')
+            );
+        }
+
+        $purchaseId = null;
+        foreach ($strackExtraLineItemInfo->get('options') as $option) {
+            if ($option['groupName'] === 'Order No.') {
+                $purchaseId = $option['name'];
+                break;
+            }
+        }
+        return $purchaseId;
     }
 }
