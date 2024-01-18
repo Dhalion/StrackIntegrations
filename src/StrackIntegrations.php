@@ -40,7 +40,7 @@ class StrackIntegrations extends Plugin
 
     public function install(InstallContext $installContext): void
     {
-//        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
+        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
     }
 
     public function update(UpdateContext $updateContext): void
