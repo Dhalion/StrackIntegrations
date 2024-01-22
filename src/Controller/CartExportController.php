@@ -2,14 +2,13 @@
 
 namespace StrackIntegrations\Controller;
 
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Content\Product\ProductEntity;
-use Shopware\Core\Checkout\Cart\SalesChannel\CartService;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
@@ -141,11 +140,6 @@ class CartExportController extends StorefrontController {
         ];
     }
 
-    private function getProductFromId(string $id): ProductEntity | null {
-        $criteria = new Criteria([$id]);
-        return $this->productRepository->search($criteria, Context::createDefaultContext())->first() ?? null;
-    }
-
     private function generateOrderKey(LineItem $lineItem): string | null {
         // Check if customizationService (Dependency) is available
         if (!$this->customizationService) {
@@ -164,11 +158,13 @@ class CartExportController extends StorefrontController {
                 $lineItem->getExtension('strackExtraLineItemInfo'));
 
         if($isProductCustomized) {
-            return $this->customizationService->getCustomizationConvertedLineItem(
+            $purchaseId = $this->customizationService->getCustomizationConvertedLineItem(
                 $purchaseId,
                 $lineItem->getExtension('customization'),
                 $lineItem->getExtension('strackExtraLineItemInfo')
             );
+
+            return $this->processDefaultGroupsForPuchaseKey($purchaseId, $lineItem->getExtension('strackExtraLineItemInfo'));
         }
 
         $purchaseId = null;
@@ -179,5 +175,14 @@ class CartExportController extends StorefrontController {
             }
         }
         return $purchaseId;
+    }
+
+    private function processDefaultGroupsForPuchaseKey(string $purchaseKey, ArrayStruct $strackExtraLineItemInfo): string
+    {
+        foreach($strackExtraLineItemInfo->get('options') as $option) {
+            $purchaseKey = str_replace('{' . $option['groupId'] . '}', $option['name'], $purchaseKey);
+        }
+
+        return $purchaseKey;
     }
 }
