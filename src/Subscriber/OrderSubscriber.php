@@ -12,11 +12,13 @@ use StrackIntegrations\Struct\LiveCalculatedPrice;
 use StrackIntegrations\Util\CustomFieldsInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Checkout\Cart\Order\CartConvertedEvent;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class OrderSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private EntityRepository $orderRepository
+        private EntityRepository $orderRepository,
+        private RequestStack $requestStack
     ) {
     }
 
@@ -42,20 +44,30 @@ readonly class OrderSubscriber implements EventSubscriberInterface
 
     public function onOrderPlacedEvent(CheckoutOrderPlacedEvent $event): void
     {
+        $request = $this->requestStack->getCurrentRequest();
+        if(!$request) {
+            $request = $this->requestStack->getMainRequest();
+        }
+
+        if(!$request) {
+            return;
+        }
+
+        $orderIsOffer = (bool)$request->get('orderIsOffer');
         $order = $event->getOrder();
-        $hasPriceError = $this->hasPriceError($order->getLineItems());
+        $isOffer = $orderIsOffer || $this->hasPriceError($order->getLineItems());
 
         $this->orderRepository->update([
             [
                 'id' => $order->getId(),
                 'customFields' => [
-                    CustomFieldsInterface::ORDER_IS_OFFER => $hasPriceError
+                    CustomFieldsInterface::ORDER_IS_OFFER => $isOffer
                 ]
             ]
         ], $event->getContext());
 
         $customFields = $order->getCustomFields() ?? [];
-        $customFields[CustomFieldsInterface::ORDER_IS_OFFER] = $hasPriceError;
+        $customFields[CustomFieldsInterface::ORDER_IS_OFFER] = $isOffer;
         $order->setCustomFields($customFields);
     }
 

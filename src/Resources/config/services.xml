@@ -63,6 +63,7 @@
 
         <service id="StrackIntegrations\Subscriber\OrderSubscriber">
             <argument type="service" id="order.repository" />
+            <argument type="service" id="request_stack" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
