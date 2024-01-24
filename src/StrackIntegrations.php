@@ -9,6 +9,7 @@ use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
 use StrackIntegrations\Installer\CustomerCustomFieldsInstaller;
+use StrackIntegrations\Installer\OrderCustomFieldsInstaller;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
@@ -41,11 +42,13 @@ class StrackIntegrations extends Plugin
     public function install(InstallContext $installContext): void
     {
         (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
+        (new OrderCustomFieldsInstaller($this->container))->installCustomFieldSet($installContext->getContext());
     }
 
     public function update(UpdateContext $updateContext): void
     {
-//        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
+        (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
+        (new OrderCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
     }
 
     public function uninstall(UninstallContext $uninstallContext): void
@@ -55,5 +58,6 @@ class StrackIntegrations extends Plugin
         }
 
         (new CustomerCustomFieldsInstaller($this->container))->uninstallCustomFieldSet($uninstallContext->getContext());
+        (new OrderCustomFieldsInstaller($this->container))->uninstallCustomFieldSet($uninstallContext->getContext());
     }
 }
