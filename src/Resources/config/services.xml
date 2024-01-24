@@ -83,6 +83,7 @@
             <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="request_stack" />
 
             <tag name="shopware.cart.processor" priority="4500" />
             <tag name="shopware.cart.collector" priority="4500" />

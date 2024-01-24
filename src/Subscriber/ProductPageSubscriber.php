@@ -9,6 +9,7 @@ use StrackIntegrations\Client\PriceClient;
 use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
+use StrackOci\Models\OciSession;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 readonly class ProductPageSubscriber implements EventSubscriberInterface
@@ -37,6 +38,11 @@ readonly class ProductPageSubscriber implements EventSubscriberInterface
         }
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $customer->getId();
+
+        if(!$this->apiConfig->isTestModeOn() && ($ociSession = $event->getRequest()->getSession()->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
+            $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+        }
+
         $product = $event->getPage()->getProduct();
 
         $startingQuantity = $product->getMinPurchase() ?: 1;

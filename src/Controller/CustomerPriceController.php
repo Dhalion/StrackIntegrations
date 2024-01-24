@@ -14,6 +14,7 @@ use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackIntegrations\Util\CustomFieldsInterface;
+use StrackOci\Models\OciSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,6 +47,10 @@ class CustomerPriceController extends StorefrontController
 
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $context->getCustomer()->getId();
+
+        if(!$this->apiConfig->isTestModeOn() && ($ociSession = $request->getSession()->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
+            $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+        }
 
         if(!$debtorNumber) {
             throw new MissingDebtorNumberException($context->getCustomer()->getCustomerNumber());

@@ -18,6 +18,8 @@ use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackIntegrations\Struct\SalesPrice;
+use StrackOci\Models\OciSession;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 readonly class CustomerPriceProcessor implements CartDataCollectorInterface, CartProcessorInterface
 {
@@ -25,7 +27,8 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         private PriceClient $priceClient,
         private PriceTransformer $priceTransformer,
         private Logger $logger,
-        private ApiConfig $apiConfig
+        private ApiConfig $apiConfig,
+        private RequestStack $requestStack
     ) {
     }
 
@@ -39,6 +42,15 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         }
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $customer->getId();
+
+        $session = null;
+        try {
+            $session = $this->requestStack->getSession();
+        } catch(\Throwable) {}
+
+        if($session && !$this->apiConfig->isTestModeOn() && ($ociSession = $session->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
+            $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+        }
 
         $priceBatchPayload = [];
 

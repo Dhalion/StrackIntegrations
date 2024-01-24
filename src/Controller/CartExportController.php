@@ -8,10 +8,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\Checkout\Cart\Cart;
-use Shopware\Core\Content\Product\ProductEntity;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-
 use avadim\FastExcelWriter\Excel;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use \Agiqon\SNProductCustomizer\Service\ProductCustomizationService;
@@ -26,8 +22,8 @@ enum ExportType: string {
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class CartExportController extends StorefrontController {
     public function __construct(
-        private ?ProductCustomizationService $customizationService,
-        private CartCalculator $cartCalculator
+        private readonly ?ProductCustomizationService $customizationService,
+        private readonly CartCalculator $cartCalculator
     ) {
     }
 
