@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Installer;
 
-use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Order\OrderDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -14,7 +14,7 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 use StrackIntegrations\Util\CustomFieldsInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-readonly class CustomerCustomFieldsInstaller
+readonly class OrderCustomFieldsInstaller
 {
     public function __construct(
         private ContainerInterface $container
@@ -31,28 +31,28 @@ readonly class CustomerCustomFieldsInstaller
         if (!$fieldSetId) {
             $customFieldSetRepository->create([
                 [
-                    'name' => CustomFieldsInterface::CUSTOMER_CUSTOM_FIELD_SET,
+                    'name' => CustomFieldsInterface::ORDER_CUSTOM_FIELD_SET,
                     'config' => [
                         'label' => [
-                            'de-DE' => 'Strack Kunde',
-                            'en-GB' => 'Strack Customer'
+                            'de-DE' => 'Strack Bestellung',
+                            'en-GB' => 'Strack Order'
                         ]
                     ],
                     "relations" => [
                         [
                             "id" => Uuid::randomHex(),
-                            "entityName" => CustomerDefinition::ENTITY_NAME
+                            "entityName" => OrderDefinition::ENTITY_NAME
                         ]
                     ],
                     'customFields' => [
-                         [
-                            'name' => CustomFieldsInterface::CUSTOMER_MINIMUM_ORDER_VALUE,
-                            'type' => CustomFieldTypes::FLOAT,
+                        [
+                            'name' => CustomFieldsInterface::ORDER_IS_OFFER,
+                            'type' => CustomFieldTypes::BOOL,
                             'config' => [
-                                'customFieldPosition' => 200,
+                                'customFieldPosition' => 100,
                                 'label' => [
-                                    'de-DE' => 'Mindestbestellwert',
-                                    'en-GB' => 'Minimum order value'
+                                    'de-DE' => 'Ist Angebot?',
+                                    'en-GB' => 'Is offer?'
                                 ]
                             ]
                         ]
@@ -60,7 +60,6 @@ readonly class CustomerCustomFieldsInstaller
                 ]
             ], $context);
         }
-
     }
 
     public function uninstallCustomFieldSet(Context $context): void
@@ -80,7 +79,7 @@ readonly class CustomerCustomFieldsInstaller
         $customFieldSetRepository = $this->container->get('custom_field_set.repository');
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', CustomFieldsInterface::CUSTOMER_CUSTOM_FIELD_SET));
+        $criteria->addFilter(new EqualsFilter('name', CustomFieldsInterface::ORDER_CUSTOM_FIELD_SET));
 
         return $customFieldSetRepository->searchIds($criteria, $context)->firstId();
     }
