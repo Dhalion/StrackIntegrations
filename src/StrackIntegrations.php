@@ -47,6 +47,10 @@ class StrackIntegrations extends Plugin
 
     public function update(UpdateContext $updateContext): void
     {
+        // todo remove eventually after deployment
+        (new CustomerCustomFieldsInstaller($this->container))->uninstallCustomFieldSet($updateContext->getContext());
+        (new OrderCustomFieldsInstaller($this->container))->uninstallCustomFieldSet($updateContext->getContext());
+
         (new CustomerCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
         (new OrderCustomFieldsInstaller($this->container))->installCustomFieldSet($updateContext->getContext());
     }

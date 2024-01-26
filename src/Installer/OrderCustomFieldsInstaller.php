@@ -55,7 +55,51 @@ readonly class OrderCustomFieldsInstaller
                                     'en-GB' => 'Is offer?'
                                 ]
                             ]
-                        ]
+                        ],
+                        [
+                            'name' => CustomFieldsInterface::ORDER_REQUESTED_DELIVERY_DATE,
+                            'type' => CustomFieldTypes::DATE,
+                            'config' => [
+                                'customFieldPosition' => 200,
+                                'label' => [
+                                    'de-DE' => 'Wunschlieferdatum',
+                                    'en-GB' => 'Requested delivery date'
+                                ]
+                            ]
+                        ],
+                        [
+                            'name' => CustomFieldsInterface::ORDER_IS_PARTIAL_DELIVERY,
+                            'type' => CustomFieldTypes::BOOL,
+                            'config' => [
+                                'customFieldPosition' => 300,
+                                'label' => [
+                                    'de-DE' => 'Teillieferung',
+                                    'en-GB' => 'Partial delivery'
+                                ]
+                            ]
+                        ],
+                        [
+                            'name' => CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER,
+                            'type' => CustomFieldTypes::TEXT,
+                            'config' => [
+                                'customFieldPosition' => 400,
+                                'label' => [
+                                    'de-DE' => 'Eigene Auftragsnummer',
+                                    'en-GB' => 'Own order number'
+                                ]
+                            ]
+                        ],
+                        [
+                            'name' => CustomFieldsInterface::ORDER_OFFER_NUMBER,
+                            'type' => CustomFieldTypes::TEXT,
+                            'config' => [
+                                'customFieldPosition' => 500,
+                                'label' => [
+                                    'de-DE' => 'Strack-Angebotsnummer',
+                                    'en-GB' => 'Strack offer number'
+                                ]
+                            ]
+                        ],
                     ]
                 ]
             ], $context);
