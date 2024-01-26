@@ -100,17 +100,6 @@ readonly class OrderCustomFieldsInstaller
                                 ]
                             ]
                         ],
-                        [
-                            'name' => CustomFieldsInterface::ORDER_COMMENT,
-                            'type' => CustomFieldTypes::TEXT,
-                            'config' => [
-                                'customFieldPosition' => 600,
-                                'label' => [
-                                    'de-DE' => 'Bemerkung',
-                                    'en-GB' => 'Comment'
-                                ]
-                            ]
-                        ],
                     ]
                 ]
             ], $context);

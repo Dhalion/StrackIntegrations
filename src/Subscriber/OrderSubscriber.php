@@ -32,11 +32,38 @@ readonly class OrderSubscriber implements EventSubscriberInterface
 
     public function onCartConvertedEvent(CartConvertedEvent $event): void
     {
+        $request = $this->requestStack->getCurrentRequest();
+
+        if(!$request) {
+            $this->requestStack->getMainRequest();
+        }
+
+        if(!$request) {
+            return;
+        }
+
+        $ownPartNumbers = $request->get(CustomFieldsInterface::ORDER_POSITION_OWN_PART_NUMBER, []);
+        $positionComments = $request->get(CustomFieldsInterface::ORDER_POSITION_COMMENT, []);
+
         $convertedCart = $event->getConvertedCart();
         foreach($convertedCart['lineItems'] as &$lineItem) {
             if($lineItem['price'] instanceof LiveCalculatedPrice) {
                 $lineItem['payload']['hasLivePriceError'] = $lineItem['price']->hasError();
             }
+
+            $ownPartNumber = $ownPartNumbers[$lineItem['identifier']] ?? null;
+            if($ownPartNumber) {
+                $ownPartNumber = substr($ownPartNumber, 0, CustomFieldsInterface::ORDER_POSITION_OWN_PART_NUMBER_MAX_LENGTH);
+            }
+
+            $lineItem['payload'][CustomFieldsInterface::ORDER_POSITION_OWN_PART_NUMBER] = $ownPartNumber;
+
+            $positionComment = $positionComments[$lineItem['identifier']] ?? null;
+            if($positionComment) {
+                $positionComment = substr($positionComment, 0, CustomFieldsInterface::ORDER_POSITION_COMMENT_MAX_LENGTH);
+            }
+
+            $lineItem['payload'][CustomFieldsInterface::ORDER_POSITION_COMMENT] = $positionComment;
         }
 
         $event->setConvertedCart($convertedCart);
@@ -54,21 +81,39 @@ readonly class OrderSubscriber implements EventSubscriberInterface
         }
 
         $orderIsOffer = (bool)$request->get('orderIsOffer');
+        $orderRequestedDeliveryDate = $request->get(CustomFieldsInterface::ORDER_REQUESTED_DELIVERY_DATE);
+        $orderIsPartialDelivery = $request->get(CustomFieldsInterface::ORDER_IS_PARTIAL_DELIVERY) === 'on';
+        $orderOwnOrderNumber = substr($request->get(CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER, ''), 0, CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER_MAX_LENGTH);
+        $orderOfferNumber = substr($request->get(CustomFieldsInterface::ORDER_OFFER_NUMBER, ''), 0, CustomFieldsInterface::ORDER_OFFER_NUMBER_MAX_LENGTH);
+        $orderComment = $request->get(CustomFieldsInterface::ORDER_COMMENT);
+
+        if($orderComment) {
+            $orderComment = substr($orderComment, 0, CustomFieldsInterface::ORDER_COMMENT_MAX_LENGTH);
+        }
+
         $order = $event->getOrder();
         $isOffer = $orderIsOffer || $this->hasPriceError($order->getLineItems());
+
+        $customFields = [
+            CustomFieldsInterface::ORDER_IS_OFFER => $isOffer,
+            CustomFieldsInterface::ORDER_REQUESTED_DELIVERY_DATE => $orderRequestedDeliveryDate,
+            CustomFieldsInterface::ORDER_IS_PARTIAL_DELIVERY => $orderIsPartialDelivery,
+            CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER => $orderOwnOrderNumber,
+            CustomFieldsInterface::ORDER_OFFER_NUMBER => $orderOfferNumber,
+        ];
 
         $this->orderRepository->update([
             [
                 'id' => $order->getId(),
-                'customFields' => [
-                    CustomFieldsInterface::ORDER_IS_OFFER => $isOffer
-                ]
+                'customFields' => $customFields,
+                'customerComment' => $orderComment
             ]
         ], $event->getContext());
 
-        $customFields = $order->getCustomFields() ?? [];
-        $customFields[CustomFieldsInterface::ORDER_IS_OFFER] = $isOffer;
-        $order->setCustomFields($customFields);
+        $actualCustomFields = $order->getCustomFields() ?? [];
+        $actualCustomFields = array_merge($actualCustomFields, $customFields);
+        $order->setCustomFields($actualCustomFields);
+        $order->setCustomerComment($orderComment);
     }
 
     private function hasPriceError(?OrderLineItemCollection $lineItems): bool
