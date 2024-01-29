@@ -79,10 +79,10 @@ class CartExportController extends StorefrontController {
             // Open the output stream in memory
             $output = fopen('php://output', 'w');
 
-            fputcsv($output, $this->getTableHeaders());
+            fputcsv($output, $this->getTableHeaders(), ';');
             // Write the data to the output stream
             foreach ($items as $item) {
-                fputcsv($output, $item);
+                fputcsv($output, $item, ';');
             }
             fclose($output);
         });
