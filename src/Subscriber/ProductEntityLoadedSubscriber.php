@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace StrackIntegrations\Subscriber;
 
@@ -10,7 +12,7 @@ use Shopware\Core\Framework\Api\Context\SalesChannelApiSource;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityLoadedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class ProductEntityLoadedSubscriber implements EventSubscriberInterface
+readonly class ProductEntityLoadedSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {

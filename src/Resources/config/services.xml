@@ -67,6 +67,11 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="StrackIntegrations\Subscriber\RegisterSubscriber">
+            <argument type="service" id="customer.repository" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="StrackIntegrations\Subscriber\VariantsTableSubscriber">
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
             <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
