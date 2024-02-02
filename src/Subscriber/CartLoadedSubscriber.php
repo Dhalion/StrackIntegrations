@@ -69,7 +69,7 @@ readonly class CartLoadedSubscriber implements EventSubscriberInterface {
                 return;
             }
 
-            $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('warning', $message);
+            $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('danger', $message);
     }
 
 }
