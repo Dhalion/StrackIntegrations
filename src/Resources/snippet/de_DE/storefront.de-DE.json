@@ -13,7 +13,7 @@
             "as-xlsx": "als XLSX"
         },
         "cart-checkout": {
-            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie Zahlen immer mindestens %minOrderVal%€."
+            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie zahlen immer mindestens %minOrderVal%€."
         }
     }
 }
