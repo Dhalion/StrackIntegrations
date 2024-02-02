@@ -61,6 +61,13 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+
+        <service id="StrackIntegrations\Subscriber\CartLoadedSubscriber">
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="translator" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="StrackIntegrations\Subscriber\OrderSubscriber">
             <argument type="service" id="order.repository" />
             <argument type="service" id="request_stack" />
@@ -79,6 +86,7 @@
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
             <tag name="kernel.event_subscriber"/>
         </service>
+
 
         <service id="StrackIntegrations\Processor\CustomerPriceProcessor">
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />

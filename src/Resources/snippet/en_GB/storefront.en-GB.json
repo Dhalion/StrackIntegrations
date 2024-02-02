@@ -11,6 +11,9 @@
             "export-btn": "Export Cart",
             "as-csv": "as CSV",
             "as-xlsx": "as XLSX"
+        },
+        "cart-checkout":{
+            "cartBelowMinimumOrderValue":  "The order total is below the minimum purchase amount of %minOrderVal%€. You will always be charged at least %minOrderVal%€."
         }
     }
 }

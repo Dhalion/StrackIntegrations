@@ -11,6 +11,9 @@
             "export-btn": "Warenkorb Exportieren",
             "as-csv": "als CSV",
             "as-xlsx": "als XLSX"
+        },
+        "cart-checkout": {
+            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie Zahlen immer mindestens %minOrderVal%€."
         }
     }
 }
