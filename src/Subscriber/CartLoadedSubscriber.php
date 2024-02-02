@@ -10,6 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Shopware\Storefront\Page\Checkout\Offcanvas\OffcanvasCartPageLoadedEvent;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Cart\Cart;
+use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
 
 readonly class CartLoadedSubscriber implements EventSubscriberInterface {
     public function __construct(
@@ -22,47 +23,53 @@ readonly class CartLoadedSubscriber implements EventSubscriberInterface {
     {
         return [
             CheckoutCartPageLoadedEvent::class => 'handleMinimumOrderValue',
-            OffcanvasCartPageLoadedEvent::class => 'handleMinimumOrderValue'
+            OffcanvasCartPageLoadedEvent::class => 'handleMinimumOrderValue',
+            CheckoutConfirmPageLoadedEvent::class => 'handleMinimumOrderValue'
         ];
     }
 
-    public function handleMinimumOrderValue(CheckoutCartPageLoadedEvent | OffcanvasCartPageLoadedEvent $event): void {
-        $customer = $event->getSalesChannelContext()->getCustomer();
-        if (!$customer) {
-            return;
-        }
+    public function handleMinimumOrderValue(
+        CheckoutCartPageLoadedEvent |
+        OffcanvasCartPageLoadedEvent |
+        CheckoutConfirmPageLoadedEvent $event): void {
 
-        $minimumOrderValue = $customer->getCustomFields()[
-            CustomFieldsInterface::CUSTOMER_MINIMUM_ORDER_VALUE
-        ] ?? null;
-        if (!$minimumOrderValue) {
-            return;
-        }
+            $customer = $event->getSalesChannelContext()->getCustomer();
+            if (!$customer) {
+                return;
+            }
 
-        $cart = $event->getPage()->getCart();
-        $cartAmount = $cart->getPrice()->getTotalPrice();
+            $minimumOrderValue = $customer->getCustomFields()[
+                CustomFieldsInterface::CUSTOMER_MINIMUM_ORDER_VALUE
+            ] ?? null;
+            if (!$minimumOrderValue) {
+                return;
+            }
 
-        if ($cartAmount >= $minimumOrderValue) {
-            return;
-        }
+            $cart = $event->getPage()->getCart();
+            $cartAmount = $cart->getPrice()->getTotalPrice();
 
-        $message = $this->translator->trans('StrackIntegrations.cart-checkout.cartBelowMinimumOrderValue', [
-            '%minOrderVal%' => $minimumOrderValue,
-        ]);
+            if ($cartAmount >= $minimumOrderValue) {
+                return;
+            }
 
-        // Show flashbag only on these routes
-        $routesToShowFlashBag = [
-            "/checkout/offcanvas",
-            "/checkout/cart"
-        ];
+            $message = $this->translator->trans('StrackIntegrations.cart-checkout.cartBelowMinimumOrderValue', [
+                '%minOrderVal%' => $minimumOrderValue,
+            ]);
 
-        $loadedRoute = $this->requestStack->getCurrentRequest()->get("resolved-uri");
+            // Show flashbag only on these routes
+            $routesToShowFlashBag = [
+                "/checkout/offcanvas",
+                "/checkout/cart",
+                "/checkout/confirm"
+            ];
 
-        if (!in_array($loadedRoute, $routesToShowFlashBag)) {
-            return;
-        }
+            $loadedRoute = $this->requestStack->getCurrentRequest()->get("resolved-uri");
 
-        $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('warning', $message);
+            if (!in_array($loadedRoute, $routesToShowFlashBag)) {
+                return;
+            }
+
+            $this->requestStack->getCurrentRequest()->getSession()->getFlashBag()->add('warning', $message);
     }
 
 }
