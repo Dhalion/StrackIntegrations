@@ -120,15 +120,5 @@
             </call>
         </service>
 
-        <service id="StrackIntegrations\Controller\CartExportController" public="true">
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-            <call method="setTwig">
-                <argument type="service" id="twig"/>
-            </call>
-            <argument type="service" id="Agiqon\SNProductCustomizer\Service\ProductCustomizationService" on-invalid="null"/>
-            <argument type="service" id="Shopware\Core\Checkout\Cart\CartCalculator"/>
-        </service>
     </services>
 </container>

@@ -14,8 +14,7 @@
   "require": {
     "shopware/core": "^6.5.3",
     "shopware/administration": "*",
-    "shopware/storefront": "*",
-    "avadim/fast-excel-writer": "^4.11"
+    "shopware/storefront": "*"
   },
   "autoload": {
     "psr-4": {
