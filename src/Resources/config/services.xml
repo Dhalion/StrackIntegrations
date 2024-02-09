@@ -87,6 +87,13 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="StrackIntegrations\Subscriber\AccessoriesPageSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
 
         <service id="StrackIntegrations\Processor\CustomerPriceProcessor">
             <argument type="service" id="StrackIntegrations\Client\PriceClient" />
