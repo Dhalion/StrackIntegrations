@@ -46,8 +46,8 @@ readonly class CartLoadedSubscriber implements EventSubscriberInterface {
             }
 
             $cart = $event->getPage()->getCart();
-            $cartAmount = $cart->getPrice()->getTotalPrice();
 
+            $cartAmount = $cart->getPrice()->getNetPrice();
             if ($cartAmount >= $minimumOrderValue || $cartAmount == 0) {
                 return;
             }
