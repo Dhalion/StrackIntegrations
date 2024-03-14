@@ -26,6 +26,29 @@ readonly abstract class AbstractClient
         $this->client = new Client();
     }
 
+    protected function get(string $endpoint): array
+    {
+        $this->apiConfig->validateConfig();
+
+        $response = $this->client->get($this->apiConfig->getApiDomain() . $endpoint, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->getAccessToken()
+            ],
+        ]);
+
+        $arrayResponse = json_decode($response->getBody()->getContents(), true);
+
+        if ($arrayResponse === false) {
+            throw new \RuntimeException(sprintf('Cannot parse JSON from endpoint: %s, raw response: %s', $endpoint, $response->getBody()->getContents()));
+        }
+
+        if (!isset($arrayResponse['value'])) {
+            throw new \RuntimeException(sprintf('Value is not present in response from endpoint: %s, raw response: %s', $endpoint, $response->getBody()->getContents()));
+        }
+
+        return $response['value'];
+    }
+
     protected function post(string $endpoint, string $soapAction, string $envelope, array $jsonParams): SimpleXMLElement
     {
         $this->apiConfig->validateConfig();
