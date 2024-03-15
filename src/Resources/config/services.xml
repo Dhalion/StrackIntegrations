@@ -121,13 +121,20 @@
             </call>
         </service>
 
-        <service id="StrackIntegrations\Controller\OrderController" public="true">
+        <service id="StrackIntegrations\Controller\OrderController" public="true" decorates="b2b_order.controller">
+            <argument type="service" id="StrackIntegrations\Page\Order\OrderPageLoader" />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
             <call method="setTwig">
                 <argument type="service" id="twig"/>
             </call>
+        </service>
+
+        <service id="StrackIntegrations\Page\Order\OrderPageLoader" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Client\OrderClient" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
         </service>
 
 <!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
