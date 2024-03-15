@@ -46,7 +46,7 @@ readonly abstract class AbstractClient
             throw new \RuntimeException(sprintf('Value is not present in response from endpoint: %s, raw response: %s', $endpoint, $response->getBody()->getContents()));
         }
 
-        return $response['value'];
+        return $arrayResponse['value'];
     }
 
     protected function post(string $endpoint, string $soapAction, string $envelope, array $jsonParams): SimpleXMLElement

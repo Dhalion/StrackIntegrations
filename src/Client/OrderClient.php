@@ -87,7 +87,7 @@ readonly class OrderClient extends AbstractClient
                 try {
                     $response = $this->get(
                         sprintf(
-                            '%s?filter=bfnSWCode eq \'%s\'',
+                            '%s?$filter=bfnSWCode eq \'%s\'',
                             $this->apiConfig->getContactEndpoint(),
                             $customerNumber,
                         ),

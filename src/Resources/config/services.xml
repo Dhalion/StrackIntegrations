@@ -121,12 +121,13 @@
             </call>
         </service>
 
-        <service id="StrackIntegrations\Controller\TestController" public="true">
-            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
+<!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
+<!--            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>-->
+<!--            <argument type="service" id="StrackIntegrations\Client\OrderClient"/>-->
+<!--            <call method="setContainer">-->
+<!--                <argument type="service" id="service_container"/>-->
+<!--            </call>-->
+<!--        </service>-->
 
     </services>
 </container>
