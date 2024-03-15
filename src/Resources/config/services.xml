@@ -35,6 +35,7 @@
         </service>
 
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+        <service id="StrackIntegrations\Client\OrderClient" parent="StrackIntegrations\Client\AbstractClient" />
 
         <service id="StrackIntegrations\Service\PriceTransformer">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
@@ -120,12 +121,29 @@
             </call>
         </service>
 
-        <service id="StrackIntegrations\Controller\TestController" public="true">
-            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
+        <service id="StrackIntegrations\Controller\OrderController" public="true" decorates="b2b_order.controller">
+            <argument type="service" id="StrackIntegrations\Page\Order\OrderPageLoader" />
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
         </service>
+
+        <service id="StrackIntegrations\Page\Order\OrderPageLoader" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Client\OrderClient" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+        </service>
+
+<!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
+<!--            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>-->
+<!--            <argument type="service" id="StrackIntegrations\Client\OrderClient"/>-->
+<!--            <call method="setContainer">-->
+<!--                <argument type="service" id="service_container"/>-->
+<!--            </call>-->
+<!--        </service>-->
 
     </services>
 </container>
