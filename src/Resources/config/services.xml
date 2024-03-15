@@ -35,6 +35,7 @@
         </service>
 
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+        <service id="StrackIntegrations\Client\OrderClient" parent="StrackIntegrations\Client\AbstractClient" />
 
         <service id="StrackIntegrations\Service\PriceTransformer">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />

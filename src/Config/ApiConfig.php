@@ -53,6 +53,21 @@ class ApiConfig extends AbstractConfig
         return (string)$this->getConfigValue('testModeDebtorNumber');
     }
 
+    public function getContactEndpoint(): string
+    {
+        return (string)$this->getConfigValue('contactEndpoint');
+    }
+
+    public function getOrderEndpoint(): string
+    {
+        return (string)$this->getConfigValue('orderEndpoint');
+    }
+
+    public function getOrderItemsEndpoint(): string
+    {
+        return (string)$this->getConfigValue('orderItemsEndpoint');
+    }
+
     public function validateConfig(): void
     {
         if(!$this->getClientId()) {
@@ -81,6 +96,18 @@ class ApiConfig extends AbstractConfig
 
         if(!$this->getPriceSoapAction()) {
             throw new MissingPluginConfigException('priceSoapAction');
+        }
+
+        if(!$this->getContactEndpoint()) {
+            throw new MissingPluginConfigException('contactEndpoint');
+        }
+
+        if(!$this->getOrderEndpoint()) {
+            throw new MissingPluginConfigException('orderEndpoint');
+        }
+
+        if(!$this->getOrderItemsEndpoint()) {
+            throw new MissingPluginConfigException('orderItemsEndpoint');
         }
     }
 

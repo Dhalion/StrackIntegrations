@@ -21,7 +21,7 @@ readonly abstract class AbstractClient
     public function __construct(
         protected ApiConfig $apiConfig,
         protected Logger $logger,
-        private CacheInterface $cache,
+        protected CacheInterface $cache,
     ) {
         $this->client = new Client();
     }
