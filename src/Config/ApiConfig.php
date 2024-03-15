@@ -68,6 +68,16 @@ class ApiConfig extends AbstractConfig
         return (string)$this->getConfigValue('orderItemsEndpoint');
     }
 
+    public function getOrderTestModeOn(): bool
+    {
+        return (bool)$this->getConfigValue('orderTestModeOn');
+    }
+
+    public function getOrderTestCustomerNumber(): string
+    {
+        return (string)$this->getConfigValue('orderTestCustomerNumber');
+    }
+
     public function validateConfig(): void
     {
         if(!$this->getClientId()) {
