@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Processor;
 
+use Agiqon\SNProductCustomizer\Service\ProductCustomizationService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\CartDataCollectorInterface;
@@ -28,7 +29,8 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         private PriceTransformer $priceTransformer,
         private Logger $logger,
         private ApiConfig $apiConfig,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private ProductCustomizationService $customizationService,
     ) {
     }
 
@@ -108,6 +110,15 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
 
             /** @var CalculatedPrice $newPrice */
             $newPrice = $data->get($key);
+
+            $isProductCustomized = $product->hasExtension('customization') && $this->customizationService->isProductCustomized(
+                    $product->getExtension('customization'),
+                    $product->getExtension('strackExtraLineItemInfo')
+            );
+
+            if($isProductCustomized) {
+                $newPrice = new CalculatedPrice(0, 0, $newPrice->getCalculatedTaxes(), $newPrice->getTaxRules());
+            }
 
             $definition = new QuantityPriceDefinition(
                 $newPrice->getUnitPrice(),

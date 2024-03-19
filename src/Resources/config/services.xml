@@ -102,6 +102,7 @@
             <argument type="service" id="StrackIntegrations\Logger\Logger" />
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
             <argument type="service" id="request_stack" />
+            <argument type="service" id="Agiqon\SNProductCustomizer\Service\ProductCustomizationService"/>
 
             <tag name="shopware.cart.processor" priority="4500" />
             <tag name="shopware.cart.collector" priority="4500" />
