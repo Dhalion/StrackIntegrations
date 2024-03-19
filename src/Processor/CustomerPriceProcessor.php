@@ -13,11 +13,13 @@ use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use StrackIntegrations\Client\PriceClient;
 use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
+use StrackIntegrations\Struct\LiveCalculatedPrice;
 use StrackIntegrations\Struct\SalesPrice;
 use StrackOci\Models\OciSession;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -117,7 +119,8 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
             );
 
             if($isProductCustomized) {
-                $newPrice = new CalculatedPrice(0, 0, $newPrice->getCalculatedTaxes(), $newPrice->getTaxRules());
+                $newPrice = new LiveCalculatedPrice(0, 0, new CalculatedTaxCollection(), $newPrice->getTaxRules());
+                $newPrice->setHasError(true);
             }
 
             $definition = new QuantityPriceDefinition(
