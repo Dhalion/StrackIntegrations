@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Processor;
 
+use Agiqon\SNProductCustomizer\Service\ProductCustomizationService;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Checkout\Cart\CartBehavior;
 use Shopware\Core\Checkout\Cart\CartDataCollectorInterface;
@@ -12,11 +13,13 @@ use Shopware\Core\Checkout\Cart\LineItem\CartDataCollection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use StrackIntegrations\Client\PriceClient;
 use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\PriceTransformer;
+use StrackIntegrations\Struct\LiveCalculatedPrice;
 use StrackIntegrations\Struct\SalesPrice;
 use StrackOci\Models\OciSession;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,7 +31,8 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         private PriceTransformer $priceTransformer,
         private Logger $logger,
         private ApiConfig $apiConfig,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private ProductCustomizationService $customizationService,
     ) {
     }
 
@@ -108,6 +112,16 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
 
             /** @var CalculatedPrice $newPrice */
             $newPrice = $data->get($key);
+
+            $isProductCustomized = $product->hasExtension('customization') && $this->customizationService->isProductCustomized(
+                    $product->getExtension('customization'),
+                    $product->getExtension('strackExtraLineItemInfo')
+            );
+
+            if($isProductCustomized) {
+                $newPrice = new LiveCalculatedPrice(0, 0, new CalculatedTaxCollection(), $newPrice->getTaxRules());
+                $newPrice->setHasError(true);
+            }
 
             $definition = new QuantityPriceDefinition(
                 $newPrice->getUnitPrice(),
