@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace StrackIntegrations\Page\Order;
+namespace StrackIntegrations\Page\Offer;
 
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Defaults;
@@ -14,9 +14,9 @@ use StrackIntegrations\Config\ApiConfig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-readonly class OrderPageLoader
+readonly class OfferPageLoader
 {
-    public const DOCUMENT_TYPE = '1';
+    public const DOCUMENT_TYPE = '0';
 
     public function __construct(
         private GenericPageLoaderInterface $genericPageLoader,
@@ -25,12 +25,12 @@ readonly class OrderPageLoader
     ) {
     }
 
-    public function load(Request $request, SalesChannelContext $context): OrderPage
+    public function load(Request $request, SalesChannelContext $context): OfferPage
     {
         $page = $this->getBasicPage($request, $context);
 
-        /** @var OrderPage $page */
-        $page = OrderPage::createFrom($page);
+        /** @var OfferPage $page */
+        $page = OfferPage::createFrom($page);
         $customerNumber = $this->getCustomerNumber($context->getCustomer()->getCustomerNumber());
 
         $page->setDocumentType(self::DOCUMENT_TYPE);
@@ -64,7 +64,7 @@ readonly class OrderPageLoader
         return $page;
     }
 
-    public function loadItems(Request $request, SalesChannelContext $context): OrderItemsPage
+    public function loadItems(Request $request, SalesChannelContext $context): OfferItemsPage
     {
         if(!$request->query->has('orderNumber')) {
             throw new BadRequestHttpException('Parameter orderNumber is required!');
@@ -72,8 +72,8 @@ readonly class OrderPageLoader
 
         $page = $this->getBasicPage($request, $context);
 
-        /** @var OrderItemsPage $page */
-        $page = OrderItemsPage::createFrom($page);
+        /** @var OfferItemsPage $page */
+        $page = OfferItemsPage::createFrom($page);
         $page->setDocumentType(self::DOCUMENT_TYPE);
 
         $result = $this->client->getOrderItems($request->query->get('orderNumber'), $page->getDocumentType());

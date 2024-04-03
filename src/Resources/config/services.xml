@@ -132,7 +132,23 @@
             </call>
         </service>
 
+        <service id="StrackIntegrations\Controller\OfferController" public="true" decorates="b2b_offer.controller">
+            <argument type="service" id="StrackIntegrations\Page\Offer\OfferPageLoader" />
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
         <service id="StrackIntegrations\Page\Order\OrderPageLoader" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Client\OrderClient" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+        </service>
+
+        <service id="StrackIntegrations\Page\Offer\OfferPageLoader" public="true">
             <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
             <argument type="service" id="StrackIntegrations\Client\OrderClient" />
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
