@@ -1,19 +1,58 @@
 {
     "StrackIntegrations":{
-        "productPage": {
-            "customerPriceError": "Ihr individueller Preis für diesen Artikel kann nicht angezeigt werden. Bitte kontaktieren Sie den Shop-Administrator.",
-            "customerPriceSuccess": "Individueller Preis wurde geladen."
+        "cart-checkout": {
+            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie zahlen immer mindestens %minOrderVal%€."
+        },
+        "cart-export": {
+            "as-csv": "als CSV",
+            "as-xlsx": "als XLSX",
+            "export-btn": "Warenkorb Exportieren"
+        },
+        "customer": {
+            "orders": {
+                "addAll": "Alle hinzufügen",
+                "address": {
+                    "types": {
+                        "SOLD_TO": "Auftragsadresse",
+                        "BILL_TO": "Rechnungsadresse",
+                        "SHIP_TO": "Lieferadresse"
+                    },
+                    "changeBillingAddressTitle": "Änderung der Rechnungsadresse (strack.de)"
+                },
+                "documents": {
+                    "invoiceTitle": "Rechnungen",
+                    "deliveryTitle": "Lieferungen",
+                    "trackingLabel": "Lieferverfolgung"
+                },
+                "error": {
+                    "noOrderResponse": "Ihre Bestellungen können aktuell nicht abgerufen werden.",
+                    "noDocument": "Das angefragte Dokument ist aktuell nicht verfügbar."
+                },
+                "filter": {
+                    "fromDate": "Frühestes Auftragsdatum:",
+                    "toDate": "Spätestes Auftragsdatum:",
+                    "searchLabel": "Suchen:",
+                    "searchReset": "Zurücksetzen"
+                },
+                "sorting": {
+                    "orderDate": "Datum",
+                    "orderNumber": "Auftragsnummer",
+                    "orderStatus": "Status",
+                    "orderTotal": "Gesamtsumme",
+                    "refNumber": "Bestellnummer"
+                }
+            }
         },
         "placeholder": {
             "priceOnlyOnRequest": "Preis auf Anfrage"
         },
-        "cart-export": {
-            "export-btn": "Warenkorb Exportieren",
-            "as-csv": "als CSV",
-            "as-xlsx": "als XLSX"
-        },
-        "cart-checkout": {
-            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie zahlen immer mindestens %minOrderVal%€."
+        "productPage": {
+            "customerPriceError": "Ihr individueller Preis für diesen Artikel kann nicht angezeigt werden. Bitte kontaktieren Sie den Shop-Administrator.",
+            "customerPriceSuccess": "Individueller Preis wurde geladen."
         }
+    },
+    "b2b": {
+        "Contracts": "Aufträge",
+        "Proposals": "Angebote"
     }
 }
