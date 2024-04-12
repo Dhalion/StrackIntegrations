@@ -65,14 +65,17 @@
       width: 100%;
 
       @include media-breakpoint-up(sm) {
-        width: 50%;
+        width: 30%;
       }
     }
 
     .btn {
-      height: 30px;
-      width: 20%;
-      padding: 2px 8px;
+      text-overflow: inherit;
+
+      @include media-breakpoint-down(sm) {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
     }
   }
 }

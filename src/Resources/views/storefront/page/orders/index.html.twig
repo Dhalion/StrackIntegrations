@@ -214,7 +214,7 @@
                                                                 <div class="">
                                                                     <div class="h2">{{ order.sellToCustomerName }}</div>
                                                                     <div class="d-flex">
-                                                                        <div class="col-4">
+                                                                        <div class="col-12 col-sm-5 col-lg-4">
                                                                             <dl>
                                                                                 <dt>{{ 'StrackIntegrations.customer.orders.accountInfo'|trans|sw_sanitize }}</dt>
                                                                                 {% if order.sellToCustomerName is not empty %}
@@ -233,7 +233,7 @@
                                                                                 {% endif %}
                                                                             </dl>
                                                                         </div>
-                                                                        <div class="col-4">
+                                                                        <div class="col-12 col-sm-5 col-lg-4">
                                                                             <dl>
                                                                                 <dt>{{ 'StrackIntegrations.customer.orders.address.types.SHIP_TO'|trans|sw_sanitize }}</dt>
                                                                                 {% if order.shipToName is not empty %}
@@ -256,7 +256,7 @@
                                                                                 {% endif %}
                                                                             </dl>
                                                                         </div>
-                                                                        <div class="col-4">
+                                                                        <div class="col-12 col-sm-2 col-lg-4">
                                                                             {% if order.completelyShipped is not empty and order.completelyShipped == true %}
                                                                                 <p>
                                                                                     {% if order.completelyShipped == true %}
