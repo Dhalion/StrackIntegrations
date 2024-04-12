@@ -60,5 +60,8 @@
             "customerPriceError": "Ihr individueller Preis für diesen Artikel kann nicht angezeigt werden. Bitte kontaktieren Sie den Shop-Administrator.",
             "customerPriceSuccess": "Individueller Preis wurde geladen."
         }
+    },
+    "account": {
+        "ordersInfoEmpty": "Für den ausgewählten Zeitraum liegen keine Ergebnisse vor."
     }
 }
