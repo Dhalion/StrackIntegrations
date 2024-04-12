@@ -9,8 +9,13 @@
             "export-btn": "Export Cart"
         },
         "customer": {
+            "offers": {
+                "error": {
+                    "noOrderResponse": "Your offers currently can't be accessed."
+                }
+            },
             "orders": {
-                "accountInfo": "Account",
+                "accountInfo": "Account-Info",
                 "addAll": "Add all",
                 "address": {
                     "types": {

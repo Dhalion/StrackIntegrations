@@ -9,8 +9,13 @@
             "export-btn": "Warenkorb Exportieren"
         },
         "customer": {
+            "offers": {
+                "error": {
+                    "noOrderResponse": "Ihre Angebote können aktuell nicht abgerufen werden."
+                }
+            },
             "orders": {
-                "accountInfo": "Kundeninfo",
+                "accountInfo": "Kunden-Info",
                 "addAll": "Alle hinzufügen",
                 "address": {
                     "types": {
