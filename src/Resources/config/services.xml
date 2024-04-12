@@ -132,6 +132,7 @@
 
         <service id="StrackIntegrations\Subscriber\CustomerSubscriber">
             <argument type="service" id="StrackIntegrations\Service\CurrencyService"/>
+            <argument type="service" id="StrackIntegrations\Logger\Logger"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
