@@ -168,6 +168,11 @@
             <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
         </service>
 
+        <service id="StrackIntegrations\Core\Framework\DataAbstractionLayer\Search\Term\TokenizerDecoration"
+                    decorates="Shopware\Core\Framework\DataAbstractionLayer\Search\Term\Tokenizer">
+                <argument>%shopware.dbal.token_minimum_length%</argument>
+        </service>
+
 <!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
 <!--            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>-->
 <!--            <argument type="service" id="StrackIntegrations\Client\OrderClient"/>-->
