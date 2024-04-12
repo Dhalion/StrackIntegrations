@@ -37,6 +37,14 @@
         <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
         <service id="StrackIntegrations\Client\OrderClient" parent="StrackIntegrations\Client\AbstractClient" />
 
+        <service id="StrackIntegrations\Service\CurrencyService">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="cache.app"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
         <service id="StrackIntegrations\Service\PriceTransformer">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
         </service>
@@ -120,6 +128,11 @@
             <call method="setTwig">
                 <argument type="service" id="twig"/>
             </call>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\CustomerSubscriber">
+            <argument type="service" id="StrackIntegrations\Service\CurrencyService"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="StrackIntegrations\Controller\OrderController" public="true" decorates="b2b_order.controller">
