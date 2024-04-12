@@ -132,6 +132,7 @@
 
         <service id="StrackIntegrations\Subscriber\CustomerSubscriber">
             <argument type="service" id="StrackIntegrations\Service\CurrencyService"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="StrackIntegrations\Controller\OrderController" public="true" decorates="b2b_order.controller">
