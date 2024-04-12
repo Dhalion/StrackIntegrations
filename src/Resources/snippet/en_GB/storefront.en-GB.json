@@ -36,6 +36,8 @@
                     "searchLabel": "Search:",
                     "searchReset": "Clear"
                 },
+                "orderItemColumnName": "Product",
+                "orderItemColumnNumber": "Product-No.",
                 "sorting": {
                     "orderDate": "Date",
                     "orderNumber": "Order number",

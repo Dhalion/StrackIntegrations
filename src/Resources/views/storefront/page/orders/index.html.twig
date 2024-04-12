@@ -276,7 +276,13 @@
                                                             {% endblock %}
 
                                                             {% block b2b_order_search_results_row_body_items %}
-                                                                <div class="b2b--ajax-panel" data-id="b2b-order-detail-{{ order.no }}"></div>
+                                                                <div class="b2b--ajax-panel" data-id="b2b-order-detail-{{ order.no }}">
+                                                                    <div class="text-center p-5">
+                                                                        <div class="spinner-border text-primary" role="status">
+                                                                            <span class="visually-hidden">Loading...</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             {% endblock %}
                                                         </div>
                                                     {% endblock %}
