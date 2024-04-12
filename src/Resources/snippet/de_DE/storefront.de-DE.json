@@ -42,7 +42,7 @@
                     "searchReset": "Zurücksetzen"
                 },
                 "orderItemColumnName": "Artikel",
-                "orderItemColumnNumber": "Produkt-Nr.",
+                "orderItemColumnNumber": "Artikel-Nr.",
                 "sorting": {
                     "orderDate": "Datum",
                     "orderNumber": "Auftragsnummer",
