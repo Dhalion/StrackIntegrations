@@ -1,75 +1,88 @@
 {% sw_extends '@SwagB2bPlatform/storefront/layout/_b2blayout.html.twig' %}
 
 {% block base_content %}
-    <div class="module-order" data-reiff-orders>
+    <div class="module-order">
         {% block b2b_order %}
-
             {% block b2b_order_header_text %}
                 <h1 class="h2 pt-3">
-                    {{ "b2b.Orders" | trans | sw_sanitize }}
+                    {{ "b2b.Orders"|trans|sw_sanitize }}
                 </h1>
             {% endblock %}
 
-            {% block reiff_order_filter %}
-                <form>
-                    {% set datePickerOptions = {
-                        locale: app.request.locale,
-                        maxDate: 'today',
-                        enableTime: false,
-                        rangeStartInput: page.orderFrom|date_modify("-1 month")|date('Y-m-d'),
-                        rangeEndInput: page.orderTo|date('Y-m-d'),
-                        dateFormat: 'Y-m-d'
-                    } %}
-                    <label>
-                        {{ 'StrackIntegrations.customer.orders.filter.fromDate' | trans | sw_sanitize }}
-                        <input type="text"
-                               name="orderFrom"
-                               class="customDate"
-                               value="{{ page.orderFrom|date_modify("-1 month")|date('Y-m-d') }}"
-                               data-date-picker
-                               data-date-picker-options="{{ datePickerOptions|json_encode|escape('html_attr') }}"
-                        />
-                    </label>
-                    <label>
-                        {{ 'StrackIntegrations.customer.orders.filter.toDate' | trans | sw_sanitize }}
-                        <input type="text"
-                               name="orderTo"
-                               class="customDate"
-                               value="{{ page.orderTo|date('Y-m-d') }}"
-                               data-date-picker
-                               data-date-picker-options="{{ datePickerOptions|json_encode|escape('html_attr') }}"
-                        />
-                    </label>
-                    <button type="submit" class="btn btn-primary">{{ 'general.formSubmit' | trans | sw_sanitize }}</button>
-                </form>
+            {# Search order by dates and term #}
+            {% block b2b_order_filter %}
+                {% block b2b_order_filter_form %}
+                    <form>
+                        {% set datePickerOptions = {
+                            locale: app.request.locale,
+                            maxDate: 'today',
+                            enableTime: false,
+                            rangeStartInput: page.orderFrom|date_modify("-1 month")|date('Y-m-d'),
+                            rangeEndInput: page.orderTo|date('Y-m-d'),
+                            dateFormat: 'Y-m-d'
+                        } %}
 
-                {% block reiff_order_search %}
-                    {% if page.orders.count > 0 %}
-                        <form class="b2b-order-search-form mt-2 mb-4">
-                            <label>
-                                {{ 'StrackIntegrations.customer.orders.filter.searchLabel'|trans|sw_sanitize }}
-                                <input type="text" class="b2b-order-search-input form-control" value="" />
+                        {% block b2b_order_filter_form_from_date %}
+                            <label class="me-1">
+                                {{ 'StrackIntegrations.customer.orders.filter.fromDate' | trans | sw_sanitize }}
+                                <input type="text"
+                                       name="orderFrom"
+                                       class="customDate form-control-sm"
+                                       value="{{ page.orderFrom|date_modify("-1 month")|date('Y-m-d') }}"
+                                       data-date-picker
+                                       data-date-picker-options="{{ datePickerOptions|json_encode|escape('html_attr') }}"
+                                />
                             </label>
-                            <button type="reset"
-                                    class="btn btn-secondary b2b-order-search-reset">
-                                {{ 'StrackIntegrations.customer.orders.filter.searchReset'|trans|sw_sanitize }}
-                            </button>
+                        {% endblock %}
+                        {% block b2b_order_filter_form_to_date %}
+                            <label class="me-1">
+                                {{ 'StrackIntegrations.customer.orders.filter.toDate' | trans | sw_sanitize }}
+                                <input type="text"
+                                       name="orderTo"
+                                       class="customDate form-control-sm"
+                                       value="{{ page.orderTo|date('Y-m-d') }}"
+                                       data-date-picker
+                                       data-date-picker-options="{{ datePickerOptions|json_encode|escape('html_attr') }}"
+                                />
+                            </label>
+                        {% endblock %}
+                        {% block b2b_order_filter_form_btn %}
+                            <button type="submit" class="btn btn-primary btn-sm">{{ 'general.formSubmit' | trans | sw_sanitize }}</button>
+                        {% endblock %}
+                    </form>
+                {% endblock %}
+
+                {% block b2b_order_search_form %}
+                    {% if page.orders|length > 0 %}
+                        <form class="b2b-order-search-form mt-2 mb-4">
+                            {% block b2b_order_search_form_input %}
+                                <label class="me-1">
+                                    {{ 'StrackIntegrations.customer.orders.filter.searchLabel'|trans|sw_sanitize }}
+                                    <input type="text" class="b2b-order-search-input form-control form-control-sm" value="" />
+                                </label>
+                            {% endblock %}
+                            {% block b2b_order_search_form_btn %}
+                                <button type="reset"
+                                        class="btn btn-sm btn-secondary b2b-order-search-reset">
+                                    {{ 'StrackIntegrations.customer.orders.filter.searchReset'|trans|sw_sanitize }}
+                                </button>
+                            {% endblock %}
                         </form>
                     {% endif %}
                 {% endblock %}
-
             {% endblock %}
 
-            {% block reiff_order_list %}
+            {# Orders list #}
+            {% block b2b_order_list %}
 
-                {#        {{ dump(page) }}#}
-                {#        {{ dump(page.orderFrom|date('Y-m-d')) }}#}
-                {#        {{ dump(page.orderTo|date('Y-m-d')) }}#}
+{#                        {{ dump(page) }}#}
+{#                        {{ dump(page.orders) }}#}
+{#                        {{ dump(page.orders|length) }}#}
 
-                {% if page.orders.count == 0 %}
-                    {% block reiff_order_list_empty %}
+                {% if page.orders|length == 0 %}
+                    {% block b2b_order_list_empty %}
                         <div class="py-2">
-                            {% if page.success %}
+                            {% if page.isSuccess %}
                                 {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
                                     type: "warning",
                                     content: "account.ordersInfoEmpty" | trans | sw_sanitize
@@ -82,12 +95,12 @@
                             {% endif %}
                         </div>
                     {% endblock %}
-
                 {% else %}
-
-                    {% block reiff_order_search_sorting_wrap %}
+                    {% block b2b_order_search_results_wrap %}
                         <div class="b2b-order-search-results-wrap">
-                            {% block reiff_order_search_sorting  %}
+
+                            {# Search results list header and sorting #}
+                            {% block b2b_order_search_results_sorting %}
                                 {% set sortingIcon %}
                                     {% sw_icon 'arrow-down-long-solid' style {
                                         'namespace': 'StrackIntegrations'
@@ -97,128 +110,178 @@
                                     } %}
                                 {% endset %}
 
-                                <div class="container sorting-buttons">
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ "StrackIntegrations.customer.orders.sorting.orderNumber"|trans|sw_sanitize }}
-                                            <button type="button"
-                                                    class="btn-sort"
-                                                    data-sorting-type="by-order-number"
-                                                    data-sorting-direction="default">
-                                                {{ sortingIcon }}
-                                            </button>
-                                        </div>
-                                        <div class="col">
-                                            {{ "StrackIntegrations.customer.orders.sorting.refNumber"|trans|sw_sanitize }}
-                                            <button type="button"
-                                                    class="btn-sort"
-                                                    data-sorting-type="by-reference"
-                                                    data-sorting-direction="default">
-                                                {{ sortingIcon }}
-                                            </button>
-                                        </div>
-                                        <div class="col">
-                                            {{ "StrackIntegrations.customer.orders.sorting.orderDate"|trans|sw_sanitize }}
-                                            <button type="button"
-                                                    class="btn-sort"
-                                                    data-sorting-type="by-date"
-                                                    data-sorting-direction="default">
-                                                {{ sortingIcon }}
-                                            </button>
-                                        </div>
-                                        <div class="col">
-                                            {{ "StrackIntegrations.customer.orders.sorting.orderStatus"|trans|sw_sanitize }}
-                                            <button type="button"
-                                                    class="btn-sort"
-                                                    data-sorting-type="by-status"
-                                                    data-sorting-direction="default">
-                                                {{ sortingIcon }}
-                                            </button>
-                                        </div>
-                                        <div class="col">
-                                            {{ "StrackIntegrations.customer.orders.sorting.orderTotal"|trans|sw_sanitize }}
-                                            <button type="button"
-                                                    class="btn-sort"
-                                                    data-sorting-type="by-total"
-                                                    data-sorting-direction="default">
-                                                {{ sortingIcon }}
-                                            </button>
-                                        </div>
-                                        <div class="col col-xl-1">
-                                            {% sw_icon 'eye-open' %}
+                                {% block b2b_order_search_results_sorting_buttons %}
+                                    <div class="container sorting-buttons">
+                                        <div class="row">
+                                            {% block b2b_order_search_results_sorting_buttons_order_no %}
+                                                <div class="col">
+                                                    {{ "StrackIntegrations.customer.orders.sorting.orderNumber"|trans|sw_sanitize }}
+                                                    <button type="button"
+                                                            class="btn-sort"
+                                                            data-sorting-type="by-order-number"
+                                                            data-sorting-direction="default">
+                                                        {{ sortingIcon }}
+                                                    </button>
+                                                </div>
+                                            {% endblock %}
+                                            {% block b2b_order_search_results_sorting_buttons_order_date %}
+                                                <div class="col">
+                                                    {{ "StrackIntegrations.customer.orders.sorting.orderDate"|trans|sw_sanitize }}
+                                                    <button type="button"
+                                                            class="btn-sort"
+                                                            data-sorting-type="by-date"
+                                                            data-sorting-direction="default">
+                                                        {{ sortingIcon }}
+                                                    </button>
+                                                </div>
+                                            {% endblock %}
+                                            {% block b2b_order_search_results_sorting_buttons_order_status %}
+                                                <div class="col">
+                                                    {{ "StrackIntegrations.customer.orders.sorting.orderStatus"|trans|sw_sanitize }}
+                                                    <button type="button"
+                                                            class="btn-sort"
+                                                            data-sorting-type="by-status"
+                                                            data-sorting-direction="default">
+                                                        {{ sortingIcon }}
+                                                    </button>
+                                                </div>
+                                            {% endblock %}
+                                            {% block b2b_order_search_results_sorting_buttons_order_total %}
+                                                <div class="col">
+                                                    {{ "StrackIntegrations.customer.orders.sorting.orderTotal"|trans|sw_sanitize }}
+                                                    <button type="button"
+                                                            class="btn-sort"
+                                                            data-sorting-type="by-total"
+                                                            data-sorting-direction="default">
+                                                        {{ sortingIcon }}
+                                                    </button>
+                                                </div>
+                                            {% endblock %}
+                                            {% block b2b_order_search_results_sorting_buttons_order_open %}
+                                                <div class="col col-xl-1">
+                                                    {% sw_icon 'eye-open' %}
+                                                </div>
+                                            {% endblock %}
                                         </div>
                                     </div>
-                                </div>
+                                {% endblock %}
                             {% endblock %}
 
-                            {% block reiff_order_search_results  %}
+                            {# Search results list #}
+                            {% block b2b_order_search_results  %}
                                 <div class="b2b-order-search-results" data-b2b-order-list="true">
+                                    {% for order in page.orders %}
+                                        {% block b2b_order_search_results_list %}
+                                            <div class="b2b-accordion"
+                                                 data-sort-by-order-number="{{ order.no }}"
+                                                 data-sort-by-date="{{ order.orderDate|format_date(pattern="Y-m-d") }}"
+                                                 data-sort-by-status="{{ order.status }}"
+                                                 data-sort-by-total="{{ order.amount }}">
 
-                                    123
+                                                {% block b2b_order_search_results_row %}
+                                                    {% block b2b_order_search_results_row_link %}
+                                                        <div class="b2b-accordion__title ajax-panel-link"
+                                                             data-bs-target="b2b-order-detail-{{ order.no }}"
+                                                             data-href="{{ path('frontend.b2b.orders.order-items', { orderNumber: order.no }) }}">
 
-{#                                    {% for order in page.orders %}#}
-{#                                        {% block reiff_order_list_row %}#}
-{#                                            <div class="b2b-accordion"#}
-{#                                                 data-sort-by-order-number="{{ order.number }}"#}
-{#                                                 data-sort-by-reference="{{ order.reference?: '-' }}"#}
-{#                                                 data-sort-by-date="{{ order.orderDate|format_date(pattern="y-M-d") }}"#}
-{#                                                 data-sort-by-status="{{ order.status }}"#}
-{#                                                 data-sort-by-total="{{ order.netTotal }}">#}
-{#                                                <div class="b2b-accordion__title ajax-panel-link"#}
-{#                                                     data-bs-target="reiff-order-detail-{{ order.number }}"#}
-{#                                                     data-href="{{ path('frontend.b2b.orders.detail', { orderNumber: order.number }) }}">#}
-{#                                                    {% block reiff_order_list_row_overview %}#}
+                                                            {% block b2b_order_search_results_row_detail %}
+                                                                {# Set order status ampel for multilingual use #}
+                                                                {% set orderStatusIndicator = 'cl-black' %}
 
-{#                                                        #}{# Set order status ampel for multilingual use #}
-{#                                                        {% set orderStatusIndicator = 'cl-black' %}#}
-{#                                                        {% set orderStatusOpen = ['in Bearbeitung'] %}#}
-{#                                                        {% set orderStatusInProcess = ['teilweise abgeschlossen','teilweise bearbeitet'] %}#}
-{#                                                        {% set orderStatusClosed = ['abgeschlossen','vollständig bearbeitet'] %}#}
-{#                                                        {% if order.status in orderStatusOpen %}#}
-{#                                                            {% set orderStatusIndicator = 'cl-black' %}#}
-{#                                                        {% elseif order.status in orderStatusInProcess %}#}
-{#                                                            {% set orderStatusIndicator = 'cl-orange' %}#}
-{#                                                        {% elseif order.status in orderStatusClosed %}#}
-{#                                                            {% set orderStatusIndicator = 'cl-green' %}#}
-{#                                                        {% endif %}#}
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col">
+                                                                            <span>{{ order.no }}</span>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <span>{{ order.orderDate|format_date('medium', locale=app.request.locale) }}</span>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <span class="{{ orderStatusIndicator }}">{{ order.status }}</span>
+                                                                        </div>
+                                                                        <div class="col">
+                                                                            <span>{{ order.amount|currency(decimals=decimals) }}</span>
+                                                                        </div>
+                                                                        <div class="col col-xl-1">
+                                                                            {% sw_icon 'arrow-head-down' style {
+                                                                                size: 'xs'
+                                                                            } %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endblock %}
+                                                        </div>
+                                                    {% endblock %}
 
-{#                                                        <div class="container">#}
-{#                                                            <div class="row">#}
-{#                                                                <div class="col">#}
-{#                                                                    <span>{{ order.number }}</span>#}
-{#                                                                </div>#}
-{#                                                                <div class="col">#}
-{#                                                                    <span>{{ order.reference?: '-' }}</span>#}
-{#                                                                </div>#}
-{#                                                                <div class="col">#}
-{#                                                                    <span>{{ order.orderDate|format_date('medium', locale=app.request.locale) }}</span>#}
-{#                                                                </div>#}
-{#                                                                <div class="col">#}
-{#                                                                    <span class="{{ orderStatusIndicator }}">{{ order.status }}</span>#}
-{#                                                                </div>#}
-{#                                                                <div class="col">#}
-{#                                                                    <span>{{ order.netTotal|currency(decimals=decimals) }}</span>#}
-{#                                                                </div>#}
-{#                                                                <div class="col col-xl-1">#}
-{#                                                                    {% sw_icon 'arrow-head-down' style {#}
-{#                                                                        size: 'xs'#}
-{#                                                                    } %}#}
-{#                                                                </div>#}
-{#                                                            </div>#}
-{#                                                        </div>#}
-{#                                                    {% endblock %}#}
-{#                                                </div>#}
-{#                                                <div class="b2b-accordion__body">#}
-{#                                                    <div#}
-{#                                                            class="b2b--ajax-panel"#}
-{#                                                            data-id="reiff-order-detail-{{ order.number }}"#}
-{#                                                            data-url=""#}
-{#                                                    ></div>#}
-{#                                                </div>#}
-{#                                            </div>#}
-{#                                        {% endblock %}#}
-{#                                    {% endfor %}#}
+                                                    {% block b2b_order_search_results_row_body %}
+                                                        <div class="b2b-accordion__body">
+                                                            {% block b2b_order_search_results_row_body_detail %}
+                                                                <div class="">
+                                                                    <div class="h2">{{ order.sellToCustomerName }}</div>
+                                                                    <div class="d-flex">
+                                                                        <div class="col-4">
+                                                                            <dl>
+                                                                                <dt>{{ 'StrackIntegrations.customer.orders.accountInfo'|trans|sw_sanitize }}</dt>
+                                                                                {% if order.sellToCustomerName is not empty %}
+                                                                                    <dd>{{ order.sellToCustomerName }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.sellToCustomerName2 is not empty %}
+                                                                                    <dd>{{ order.sellToCustomerName2 }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.sellToContact is not empty %}
+                                                                                    <dd>{{ order.sellToContact }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.sellToCustomerNo is not empty %}
+                                                                                    <dd>Shop-Kundennummer: {{ order.sellToCustomerNo }}</dd>
+                                                                                {% endif %}
+                                                                            </dl>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <dl>
+                                                                                <dt>{{ 'StrackIntegrations.customer.orders.address.types.SHIP_TO'|trans|sw_sanitize }}</dt>
+                                                                                {% if order.shipToName is not empty %}
+                                                                                    <dd>{{ order.shipToName }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.shipToName2 is not empty %}
+                                                                                    <dd>{{ order.shipToName2 }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.shipToAddress is not empty %}
+                                                                                    <dd>{{ order.shipToAddress }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.shipToAddress2 is not empty %}
+                                                                                    <dd>{{ order.shipToAddress2 }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.shipToPostcode is not empty or order.shipToCity is not empty %}
+                                                                                    <dd>{{ order.shipToPostcode }} {{ order.shipToCity }}</dd>
+                                                                                {% endif %}
+                                                                                {% if order.shipToCountry is not empty %}
+                                                                                    <dd>{{ order.shipToCountry }}</dd>
+                                                                                {% endif %}
+                                                                            </dl>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            {% if order.completelyShipped is not empty and order.completelyShipped == true %}
+                                                                                <p>
+                                                                                    {% if order.completelyShipped == true %}
+                                                                                        {% sw_icon 'checkmark' %}
+                                                                                        {{ 'StrackIntegrations.customer.orders.completelyShipped'|trans|sw_sanitize }}
+                                                                                    {% endif %}
+                                                                                </p>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endblock %}
 
+                                                            {% block b2b_order_search_results_row_body_items %}
+                                                                <div class="b2b--ajax-panel" data-id="b2b-order-detail-{{ order.no }}"></div>
+                                                            {% endblock %}
+                                                        </div>
+                                                    {% endblock %}
+                                                {% endblock %}
+                                            </div>
+                                        {% endblock %}
+                                    {% endfor %}
                                 </div>
                             {% endblock %}
 

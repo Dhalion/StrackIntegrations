@@ -10,6 +10,7 @@
         },
         "customer": {
             "orders": {
+                "accountInfo": "Kundeninfo",
                 "addAll": "Alle hinzufügen",
                 "address": {
                     "types": {
@@ -19,6 +20,7 @@
                     },
                     "changeBillingAddressTitle": "Änderung der Rechnungsadresse (strack.de)"
                 },
+                "completelyShipped": "Komplett geliefert",
                 "documents": {
                     "invoiceTitle": "Rechnungen",
                     "deliveryTitle": "Lieferungen",
@@ -50,9 +52,5 @@
             "customerPriceError": "Ihr individueller Preis für diesen Artikel kann nicht angezeigt werden. Bitte kontaktieren Sie den Shop-Administrator.",
             "customerPriceSuccess": "Individueller Preis wurde geladen."
         }
-    },
-    "b2b": {
-        "Contracts": "Aufträge",
-        "Proposals": "Angebote"
     }
 }

@@ -10,6 +10,7 @@
         },
         "customer": {
             "orders": {
+                "accountInfo": "Account",
                 "addAll": "Add all",
                 "address": {
                     "types": {
@@ -19,6 +20,7 @@
                     },
                     "changeBillingAddressTitle": "Change billing address (strack.de)"
                 },
+                "completelyShipped": "Completely shipped",
                 "documents": {
                     "invoiceTitle": "Invoices",
                     "deliveryTitle": "Deliveries",
@@ -50,9 +52,5 @@
             "customerPriceError": "Your individual price for this article cannot be displayed. Please contact shop administrator.",
             "customerPriceSuccess": "Individual price has been loaded."
         }
-    },
-    "b2b": {
-        "Contracts": "Orders",
-        "Proposals": "Proposals"
     }
 }
