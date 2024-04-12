@@ -1,19 +1,64 @@
 {
     "StrackIntegrations":{
-        "productPage": {
-            "customerPriceError": "Your individual price for this article cannot be displayed. Please contact shop administrator.",
-            "customerPriceSuccess": "Individual price has been loaded."
+        "cart-checkout":{
+            "cartBelowMinimumOrderValue":  "The order total is below the minimum purchase amount of %minOrderVal%€. You will always be charged at least %minOrderVal%€."
+        },
+        "cart-export": {
+            "as-csv": "as CSV",
+            "as-xlsx": "as XLSX",
+            "export-btn": "Export Cart"
+        },
+        "customer": {
+            "offers": {
+                "error": {
+                    "noOrderResponse": "Your offers currently can't be accessed."
+                }
+            },
+            "orders": {
+                "accountInfo": "Account-Info",
+                "addAll": "Add all",
+                "address": {
+                    "types": {
+                        "SOLD_TO": "Order Address",
+                        "BILL_TO": "Billing Address",
+                        "SHIP_TO": "Shipping Address"
+                    },
+                    "changeBillingAddressTitle": "Change billing address (strack.de)"
+                },
+                "completelyShipped": "Completely shipped",
+                "documents": {
+                    "invoiceTitle": "Invoices",
+                    "deliveryTitle": "Deliveries",
+                    "trackingLabel": "Tracking"
+                },
+                "error": {
+                    "noOrderResponse": "Your orders currently can't be accessed.",
+                    "noDocument": "This document currently not available."
+                },
+                "filter": {
+                    "fromDate": "Earliest Order Date:",
+                    "toDate": "Latest Order Date:",
+                    "searchLabel": "Search:",
+                    "searchReset": "Clear"
+                },
+                "orderItemColumnName": "Product",
+                "orderItemColumnNumber": "Product-No.",
+                "sorting": {
+                    "orderDate": "Date",
+                    "orderNumber": "Order number",
+                    "orderStatus": "Status",
+                    "orderTotal": "Total price",
+                    "refNumber": "Reference number"
+                }
+            },
+            "shopCustomerId": "Shop-Customer-nr."
         },
         "placeholder": {
             "priceOnlyOnRequest": "Request this price"
         },
-        "cart-export": {
-            "export-btn": "Export Cart",
-            "as-csv": "as CSV",
-            "as-xlsx": "as XLSX"
-        },
-        "cart-checkout":{
-            "cartBelowMinimumOrderValue":  "The order total is below the minimum purchase amount of %minOrderVal%€. You will always be charged at least %minOrderVal%€."
+        "productPage": {
+            "customerPriceError": "Your individual price for this article cannot be displayed. Please contact shop administrator.",
+            "customerPriceSuccess": "Individual price has been loaded."
         }
     }
 }

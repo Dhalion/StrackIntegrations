@@ -1,0 +1,78 @@
+.module-order,
+.module-offer {
+  .form-control-sm {
+    min-height: 36px;
+  }
+}
+
+.contract-detail-container {
+  table table {
+    thead th {
+      border-bottom: 2px solid $sw-border-color;
+      padding: 12px;
+    }
+
+    tbody {
+      td {
+        border-bottom: 1px solid $sw-border-color;
+        padding: 12px;
+      }
+
+      tr:last-child td {
+        border: none;
+      }
+    }
+  }
+}
+
+[data-id*=reiff-order-detail-] {
+  table thead th {
+    border-top: 1px solid $sw-border-color;
+    border-bottom: 2px solid $sw-border-color;
+  }
+}
+
+.b2b-additional-fields {
+  .form-group {
+    margin-bottom: 12px;
+  }
+}
+
+.b2b-additional-fields-help-text {
+  padding: 0 5px 5px;
+}
+
+.b2b-remote-list-orderlist {
+  > .row > [class*="col"] {
+    width: 100%;
+
+    @include media-breakpoint-up(lg) {
+      width: 75%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      width: 60%;
+    }
+  }
+}
+
+.order-list-form {
+  .b2b--orderlist-add {
+    margin: 0 !important;
+
+    input {
+      text-overflow: ellipsis;
+      width: 100%;
+
+      @include media-breakpoint-up(sm) {
+        width: 50%;
+      }
+    }
+
+    .btn {
+      height: 30px;
+      width: 20%;
+      padding: 2px 8px;
+    }
+  }
+}

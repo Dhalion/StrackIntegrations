@@ -1,4 +1,36 @@
-{% block strack_order_items %}
-    <h1>It works</h1>
-{#    {{ dump(page) }}#}
+{% block b2b_order_items %}
+    {% if page.items|length > 0 %}
+        {% block b2b_order_items_list %}
+            <div>
+                <table class="table order-positions-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnName'|trans|sw_sanitize }}</th>
+                            <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnNumber'|trans|sw_sanitize }}</th>
+                            <th>{{ 'account.orderItemColumnQuantity'|trans|sw_sanitize }}</th>
+                            <th>{{ 'account.orderItemColumnTotal'|trans|sw_sanitize }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in page.items %}
+                            {% block b2b_order_items_list_item %}
+                                <tr>
+                                    <td>
+                                        {{ item.description|raw }}
+                                        {% if item.description2 is not empty %}
+                                            <br>{{ item.description2|raw }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.no }}</td>
+                                    <td>{{ item.quantity }}</td>
+{#                                    <td>{{ lineItem.lineAmount|currency(order.currency) }}</td>#}
+                                    <td>{{ item.lineAmount|currency(decimals=decimals) }}</td>
+                                </tr>
+                            {% endblock %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endblock %}
+    {% endif %}
 {% endblock %}
