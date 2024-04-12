@@ -43,7 +43,8 @@
                     "orderTotal": "Total price",
                     "refNumber": "Reference number"
                 }
-            }
+            },
+            "shopCustomerId": "Shop-Customer-nr."
         },
         "placeholder": {
             "priceOnlyOnRequest": "Request this price"

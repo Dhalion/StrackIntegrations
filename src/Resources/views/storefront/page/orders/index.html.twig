@@ -232,7 +232,9 @@
                                                                                     <dd>{{ order.sellToContact }}</dd>
                                                                                 {% endif %}
                                                                                 {% if order.sellToCustomerNo is not empty %}
-                                                                                    <dd>Shop-Kundennummer: {{ order.sellToCustomerNo }}</dd>
+                                                                                    <dd>
+                                                                                        {{ 'StrackIntegrations.customer.shopCustomerId'|trans|sw_sanitize }}: {{ order.sellToCustomerNo }}
+                                                                                    </dd>
                                                                                 {% endif %}
                                                                             </dl>
                                                                         </div>
@@ -251,8 +253,8 @@
                                                                                 {% if order.shipToAddress2 is not empty %}
                                                                                     <dd>{{ order.shipToAddress2 }}</dd>
                                                                                 {% endif %}
-                                                                                {% if order.shipToPostcode is not empty or order.shipToCity is not empty %}
-                                                                                    <dd>{{ order.shipToPostcode }} {{ order.shipToCity }}</dd>
+                                                                                {% if order.shipToPostCode is not empty or order.shipToCity is not empty %}
+                                                                                    <dd>{{ order.shipToPostCode }} {{ order.shipToCity }}</dd>
                                                                                 {% endif %}
                                                                                 {% if order.shipToCountry is not empty %}
                                                                                     <dd>{{ order.shipToCountry }}</dd>

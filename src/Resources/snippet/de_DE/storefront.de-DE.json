@@ -43,7 +43,8 @@
                     "orderTotal": "Gesamtsumme",
                     "refNumber": "Bestellnummer"
                 }
-            }
+            },
+            "shopCustomerId": "Shop-Kundennummer"
         },
         "placeholder": {
             "priceOnlyOnRequest": "Preis auf Anfrage"
