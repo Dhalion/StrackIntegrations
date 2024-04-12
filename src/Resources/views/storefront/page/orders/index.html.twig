@@ -74,11 +74,6 @@
 
             {# Orders list #}
             {% block b2b_order_list %}
-
-{#                        {{ dump(page) }}#}
-{#                        {{ dump(page.orders) }}#}
-{#                        {{ dump(page.orders|length) }}#}
-
                 {% if page.orders|length == 0 %}
                     {% block b2b_order_list_empty %}
                         <div class="py-2">
