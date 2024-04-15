@@ -63,5 +63,11 @@
     },
     "account": {
         "ordersInfoEmpty": "Für den ausgewählten Zeitraum liegen keine Ergebnisse vor."
+    },
+    "b2b": {
+        "ChooseProductLabel": "Artikel wählen",
+        "FileNumberColumn": "Artikelnummer Spalte",
+        "ProductNameLabel": "Artikel",
+        "ProductNumberLabel": "Artikelnummer"
     }
 }
