@@ -1,0 +1,185 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="StrackIntegrations\Config\AbstractConfig" abstract="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+        </service>
+
+        <service id="StrackIntegrations\Config\ApiConfig" parent="StrackIntegrations\Config\AbstractConfig" />
+
+        <service id="strack_integrations.monolog.handler" class="Monolog\Handler\RotatingFileHandler">
+            <argument>%kernel.logs_dir%/%kernel.environment%.strack_integrations.log</argument>
+            <argument>14</argument>
+            <argument>warning</argument>
+        </service>
+
+        <service id="strack_integrations.logger" class="Monolog\Logger">
+            <argument type="string">strack_integrations</argument>
+            <call method="pushHandler">
+                <argument type="service" id="strack_integrations.monolog.handler"/>
+            </call>
+        </service>
+
+        <service id="StrackIntegrations\Logger\Logger" public="false">
+            <argument type="service" id="strack_integrations.logger" />
+        </service>
+
+        <service id="StrackIntegrations\Client\AbstractClient" abstract="true">
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="cache.system" />
+        </service>
+
+        <service id="StrackIntegrations\Client\PriceClient" parent="StrackIntegrations\Client\AbstractClient" />
+        <service id="StrackIntegrations\Client\OrderClient" parent="StrackIntegrations\Client\AbstractClient" />
+
+        <service id="StrackIntegrations\Service\CurrencyService">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="cache.app"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextPersister"/>
+            <argument type="service" id="event_dispatcher"/>
+        </service>
+
+        <service id="StrackIntegrations\Service\PriceTransformer">
+            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator" />
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\ProductEntityLoadedSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Core\Framework\Adapter\Twig\Filter\CurrencyFilter" decorates="Shopware\Core\Framework\Adapter\Twig\Filter\CurrencyFilter">
+            <argument type="service" id="Shopware\Core\System\Currency\CurrencyFormatter"/>
+            <argument type="service" id="translator" />
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\ProductPageSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\CheckoutPageSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+
+        <service id="StrackIntegrations\Subscriber\CartLoadedSubscriber">
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="translator" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\OrderSubscriber">
+            <argument type="service" id="order.repository" />
+            <argument type="service" id="request_stack" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\RegisterSubscriber">
+            <argument type="service" id="customer.repository" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\VariantsTableSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\AccessoriesPageSubscriber">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Processor\CustomerPriceProcessor">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient" />
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="Agiqon\SNProductCustomizer\Service\ProductCustomizationService"/>
+
+            <tag name="shopware.cart.processor" priority="4500" />
+            <tag name="shopware.cart.collector" priority="4500" />
+        </service>
+
+        <service id="StrackIntegrations\Controller\CustomerPriceController" public="true">
+            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>
+            <argument type="service" id="StrackIntegrations\Service\PriceTransformer" />
+            <argument type="service" id="StrackIntegrations\Logger\Logger" />
+            <argument type="service" id="Shopware\Storefront\Page\Product\ProductPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
+        <service id="StrackIntegrations\Subscriber\CustomerSubscriber">
+            <argument type="service" id="StrackIntegrations\Service\CurrencyService"/>
+            <argument type="service" id="StrackIntegrations\Logger\Logger"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="StrackIntegrations\Controller\OrderController" public="true" decorates="b2b_order.controller">
+            <argument type="service" id="StrackIntegrations\Page\Order\OrderPageLoader" />
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
+        <service id="StrackIntegrations\Controller\OfferController" public="true" decorates="b2b_offer.controller">
+            <argument type="service" id="StrackIntegrations\Page\Offer\OfferPageLoader" />
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
+        <service id="StrackIntegrations\Page\Order\OrderPageLoader" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Client\OrderClient" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+        </service>
+
+        <service id="StrackIntegrations\Page\Offer\OfferPageLoader" public="true">
+            <argument type="service" id="Shopware\Storefront\Page\GenericPageLoader"/>
+            <argument type="service" id="StrackIntegrations\Client\OrderClient" />
+            <argument type="service" id="StrackIntegrations\Config\ApiConfig" />
+        </service>
+
+        <service id="StrackIntegrations\Core\Framework\DataAbstractionLayer\Search\Term\TokenizerDecoration"
+                    decorates="Shopware\Core\Framework\DataAbstractionLayer\Search\Term\Tokenizer">
+                <argument>%shopware.dbal.token_minimum_length%</argument>
+        </service>
+
+<!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
+<!--            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>-->
+<!--            <argument type="service" id="StrackIntegrations\Client\OrderClient"/>-->
+<!--            <call method="setContainer">-->
+<!--                <argument type="service" id="service_container"/>-->
+<!--            </call>-->
+<!--        </service>-->
+
+    </services>
+</container>

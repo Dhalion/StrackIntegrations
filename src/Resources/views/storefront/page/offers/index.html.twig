@@ -1,0 +1,32 @@
+{% sw_extends '@StrackIntegrations/storefront/page/orders/index.html.twig' %}
+
+{# Changed main class and headline #}
+{% block base_content %}
+    <div class="module-offer">
+        {% block b2b_order %}
+            {{ parent() }}
+        {% endblock %}
+    </div>
+{% endblock %}
+{% block b2b_order_header_text %}
+    <h1 class="h2 pt-3">
+        {{ "b2b.Offers"|trans|sw_sanitize }}
+    </h1>
+{% endblock %}
+
+{# Changed alert messages #}
+{% block b2b_order_list_empty %}
+    <div class="py-2">
+        {% if page.isSuccess %}
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: "warning",
+                content: "account.ordersInfoEmpty" | trans | sw_sanitize
+            } %}
+        {% else %}
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: "danger",
+                content: "StrackIntegrations.customer.offers.error.noOrderResponse" | trans | sw_sanitize
+            } %}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{
+    "StrackIntegrations":{
+        "cart-checkout": {
+            "cartBelowMinimumOrderValue": "Der Mindestbestellwert von %minOrderVal%€ wurde noch nicht erreicht. Sie zahlen immer mindestens %minOrderVal%€."
+        },
+        "cart-export": {
+            "as-csv": "als CSV",
+            "as-xlsx": "als XLSX",
+            "export-btn": "Warenkorb Exportieren"
+        },
+        "customer": {
+            "offers": {
+                "error": {
+                    "noOrderResponse": "Ihre Angebote können aktuell nicht abgerufen werden."
+                }
+            },
+            "orders": {
+                "accountInfo": "Kunden-Info",
+                "addAll": "Alle hinzufügen",
+                "address": {
+                    "types": {
+                        "SOLD_TO": "Auftragsadresse",
+                        "BILL_TO": "Rechnungsadresse",
+                        "SHIP_TO": "Lieferadresse"
+                    },
+                    "changeBillingAddressTitle": "Änderung der Rechnungsadresse (strack.de)"
+                },
+                "completelyShipped": "Komplett geliefert",
+                "documents": {
+                    "invoiceTitle": "Rechnungen",
+                    "deliveryTitle": "Lieferungen",
+                    "trackingLabel": "Lieferverfolgung"
+                },
+                "error": {
+                    "noOrderResponse": "Ihre Bestellungen können aktuell nicht abgerufen werden.",
+                    "noDocument": "Das angefragte Dokument ist aktuell nicht verfügbar."
+                },
+                "filter": {
+                    "fromDate": "Frühestes Auftragsdatum:",
+                    "toDate": "Spätestes Auftragsdatum:",
+                    "searchLabel": "Suchen:",
+                    "searchReset": "Zurücksetzen"
+                },
+                "orderItemColumnName": "Artikel",
+                "orderItemColumnNumber": "Artikel-Nr.",
+                "sorting": {
+                    "orderDate": "Datum",
+                    "orderNumber": "Auftragsnummer",
+                    "orderStatus": "Status",
+                    "orderTotal": "Gesamtsumme",
+                    "refNumber": "Bestellnummer"
+                }
+            },
+            "shopCustomerId": "Shop-Kundennummer"
+        },
+        "placeholder": {
+            "priceOnlyOnRequest": "Preis auf Anfrage"
+        },
+        "productPage": {
+            "customerPriceError": "Ihr individueller Preis für diesen Artikel kann nicht angezeigt werden. Bitte kontaktieren Sie den Shop-Administrator.",
+            "customerPriceSuccess": "Individueller Preis wurde geladen."
+        }
+    },
+    "account": {
+        "ordersInfoEmpty": "Für den ausgewählten Zeitraum liegen keine Ergebnisse vor."
+    },
+    "b2b": {
+        "ChooseProductLabel": "Artikel wählen",
+        "FileNumberColumn": "Artikelnummer Spalte",
+        "ProductNameLabel": "Artikel",
+        "ProductNumberLabel": "Artikelnummer"
+    }
+}
