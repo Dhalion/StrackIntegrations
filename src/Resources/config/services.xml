@@ -53,6 +53,10 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
+        <service id="StrackIntegrations\Subscriber\CartSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
         <service id="StrackIntegrations\Core\Framework\Adapter\Twig\Filter\CurrencyFilter" decorates="Shopware\Core\Framework\Adapter\Twig\Filter\CurrencyFilter">
             <argument type="service" id="Shopware\Core\System\Currency\CurrencyFormatter"/>
             <argument type="service" id="translator" />
