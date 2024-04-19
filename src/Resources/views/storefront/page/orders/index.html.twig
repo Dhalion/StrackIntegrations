@@ -182,6 +182,17 @@
                                                             {% block b2b_order_search_results_row_detail %}
                                                                 {# Set order status ampel for multilingual use #}
                                                                 {% set orderStatusIndicator = 'cl-black' %}
+                                                                {% set orderStatus = '' %}
+
+                                                                {% if order.completelyShipped is defined and order.completelyShipped == true %}
+                                                                    {% set orderStatus = "StrackIntegrations.customer.orders.b2bOrderStatusShipped"|trans|sw_sanitize %}
+                                                                    {% set orderStatusIndicator = 'cl-green' %}
+                                                                {% elseif order.status is not empty and order.status == 'Open' %}
+                                                                    {% set orderStatus = "StrackIntegrations.customer.orders.b2bOrderStatusOpen"|trans|sw_sanitize %}
+                                                                {% else %}
+                                                                    {% set orderStatus = "StrackIntegrations.customer.orders.b2bOrderStatusInProcess"|trans|sw_sanitize %}
+                                                                    {% set orderStatusIndicator = 'cl-orange' %}
+                                                                {% endif %}
 
                                                                 <div class="container">
                                                                     <div class="row">
@@ -192,7 +203,7 @@
                                                                             <span>{{ order.orderDate|format_date('medium', locale=app.request.locale) }}</span>
                                                                         </div>
                                                                         <div class="col">
-                                                                            <span class="{{ orderStatusIndicator }}">{{ order.status }}</span>
+                                                                            <span class="{{ orderStatusIndicator }}">{{ orderStatus }}</span>
                                                                         </div>
                                                                         <div class="col">
                                                                             <span>{{ order.amount|currency(decimals=decimals) }}</span>
@@ -255,16 +266,6 @@
                                                                                     <dd>{{ order.shipToCountry }}</dd>
                                                                                 {% endif %}
                                                                             </dl>
-                                                                        </div>
-                                                                        <div class="col-12 col-sm-2 col-lg-4">
-                                                                            {% if order.completelyShipped is not empty and order.completelyShipped == true %}
-                                                                                <p>
-                                                                                    {% if order.completelyShipped == true %}
-                                                                                        {% sw_icon 'checkmark' %}
-                                                                                        {{ 'StrackIntegrations.customer.orders.completelyShipped'|trans|sw_sanitize }}
-                                                                                    {% endif %}
-                                                                                </p>
-                                                                            {% endif %}
                                                                         </div>
                                                                     </div>
                                                                 </div>

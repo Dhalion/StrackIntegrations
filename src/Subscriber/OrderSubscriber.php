@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace StrackIntegrations\Subscriber;
 
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
+use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -64,6 +65,12 @@ readonly class OrderSubscriber implements EventSubscriberInterface
             }
 
             $lineItem['payload'][CustomFieldsInterface::ORDER_POSITION_COMMENT] = $positionComment;
+            $identifier = $lineItem['identifier'];
+
+            $originalLineItem = $event->getCart()->getLineItems()->filter(function(LineItem $lineItem) use ($identifier) { return $identifier === $lineItem->getId();} )->first();
+            if ($originalLineItem && $originalLineItem->getDeliveryInformation()) {
+                $lineItem['payload']['strack_stock'] = $originalLineItem->getDeliveryInformation()->getStock();
+            }
         }
 
         $event->setConvertedCart($convertedCart);

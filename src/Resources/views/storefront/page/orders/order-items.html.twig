@@ -6,7 +6,8 @@
                     <thead>
                         <tr>
                             <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnName'|trans|sw_sanitize }}</th>
-                            <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnNumber'|trans|sw_sanitize }}</th>
+{#                            <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnNumber'|trans|sw_sanitize }}</th>#}
+                            <th>{{ 'StrackIntegrations.customer.orders.orderItemColumnStatus'|trans|sw_sanitize }}</th>
                             <th>{{ 'account.orderItemColumnQuantity'|trans|sw_sanitize }}</th>
                             <th>{{ 'account.orderItemColumnTotal'|trans|sw_sanitize }}</th>
                         </tr>
@@ -14,6 +15,21 @@
                     <tbody>
                         {% for item in page.items %}
                             {% block b2b_order_items_list_item %}
+
+                                {# Set order status ampel for multilingual use #}
+                                {% set positionStatusIndicator = 'cl-black' %}
+                                {% set positionStatus = '' %}
+
+                                {% if item.outstandingQuantity is defined and item.outstandingQuantity == 0 %}
+                                    {% set positionStatus = "StrackIntegrations.customer.orders.b2bPositionStatusShipped"|trans|sw_sanitize %}
+                                    {% set positionStatusIndicator = 'cl-green' %}
+                                {% elseif item.outstandingQuantity == item.quantity %}
+                                    {% set positionStatus = "StrackIntegrations.customer.orders.b2bPositionStatusOpen"|trans|sw_sanitize %}
+                                {% else %}
+                                    {% set positionStatus = "StrackIntegrations.customer.orders.b2bPositionStatusInProcess"|trans|sw_sanitize %}
+                                    {% set positionStatusIndicator = 'cl-orange' %}
+                                {% endif %}
+
                                 <tr>
                                     <td>
                                         {{ item.description|raw }}
@@ -21,7 +37,8 @@
                                             <br>{{ item.description2|raw }}
                                         {% endif %}
                                     </td>
-                                    <td>{% if item.no is not empty %}{{ item.no }}{% else %}-{% endif %}</td>
+{#                                    <td>{% if item.no is not empty %}{{ item.no }}{% else %}-{% endif %}</td>#}
+                                    <td>{% if item.type == 'Item' %}<span class="{{ positionStatusIndicator }}">{{ positionStatus }}</span>{% else %}-{% endif %}</td>
                                     <td>{% if item.type == 'Item' %}{{ item.quantity }}{% else %}-{% endif %}</td>
 {#                                    <td>{{ lineItem.lineAmount|currency(order.currency) }}</td>#}
                                     <td>{% if item.type == 'Item' %}{{ item.lineAmount|currency(decimals=decimals) }}{% else %}-{% endif %}</td>
