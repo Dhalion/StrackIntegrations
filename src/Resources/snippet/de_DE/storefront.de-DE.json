@@ -25,6 +25,12 @@
                     },
                     "changeBillingAddressTitle": "Änderung der Rechnungsadresse (strack.de)"
                 },
+                "b2bOrderStatusInProcess": "In Bearbeitung",
+                "b2bOrderStatusOpen": "Eingegangen",
+                "b2bOrderStatusShipped": "Versendet",
+                "b2bPositionStatusInProcess": "Teillieferung",
+                "b2bPositionStatusOpen": "Offen",
+                "b2bPositionStatusShipped": "Geliefert",
                 "completelyShipped": "Komplett geliefert",
                 "documents": {
                     "invoiceTitle": "Rechnungen",
@@ -43,6 +49,7 @@
                 },
                 "orderItemColumnName": "Artikel",
                 "orderItemColumnNumber": "Artikel-Nr.",
+                "orderItemColumnStatus": "Status",
                 "sorting": {
                     "orderDate": "Datum",
                     "orderNumber": "Auftragsnummer",
