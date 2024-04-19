@@ -30,3 +30,13 @@
         {% endif %}
     </div>
 {% endblock %}
+
+{# Added route to the offer items #}
+{% block b2b_order_search_results_row_link %}
+    <div class="b2b-accordion__title ajax-panel-link"
+         data-bs-target="b2b-order-detail-{{ order.no }}"
+         data-href="{{ path('frontend.b2b.offers.offer-items', { orderNumber: order.no }) }}">
+
+        {{ block('b2b_order_search_results_row_detail') }}
+    </div>
+{% endblock %}
