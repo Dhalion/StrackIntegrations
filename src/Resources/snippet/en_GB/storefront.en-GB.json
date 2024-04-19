@@ -25,6 +25,12 @@
                     },
                     "changeBillingAddressTitle": "Change billing address (strack.de)"
                 },
+                "b2bOrderStatusInProcess": "In process",
+                "b2bOrderStatusOpen": "Open",
+                "b2bOrderStatusShipped": "Shipped",
+                "b2bPositionStatusInProcess": "Partly shipped",
+                "b2bPositionStatusOpen": "Open",
+                "b2bPositionStatusShipped": "Shipped",
                 "completelyShipped": "Completely shipped",
                 "documents": {
                     "invoiceTitle": "Invoices",
@@ -43,6 +49,7 @@
                 },
                 "orderItemColumnName": "Product",
                 "orderItemColumnNumber": "Product-No.",
+                "orderItemColumnStatus": "Status",
                 "sorting": {
                     "orderDate": "Date",
                     "orderNumber": "Order number",
