@@ -183,6 +183,13 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
+        <service id="StrackIntegrations\B2bSuite\FastOrder\Framework\FastOrderService" decorates="b2b_fast_order.fast_order_service">
+            <argument id="b2b_common.csv_reader" type="service"/>
+            <argument id="b2b_common.xls_reader" type="service"/>
+            <argument id="b2b_shop.product_service" type="service"/>
+            <argument id="b2b_line_item_list.shop_writer_service" type="service"/>
+        </service>
+
 <!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
 <!--            <argument type="service" id="StrackIntegrations\Client\PriceClient"/>-->
 <!--            <argument type="service" id="StrackIntegrations\Client\OrderClient"/>-->

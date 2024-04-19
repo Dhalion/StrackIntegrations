@@ -62,26 +62,6 @@ readonly class ProductService implements ProductServiceInterface
     {
         $context = $this->contextProvider->getSalesChannelContext();
         //possible working query
-//        $query = $this->connection->createQueryBuilder()
-//            ->from('product')
-//            ->select(
-//                'product.product_number',
-//                'IFNULL(product_name, parent_name) as name',
-//                'IFNULL(product.min_purchase, parent.min_purchase) as min_purchase',
-//                'IFNULL(product.max_purchase, parent.max_purchase) as max_purchase',
-//                'IFNULL(product.purchase_steps, parent.purchase_steps) as purchase_steps'
-//            )
-//            ->leftJoin('product', 'product', 'parent', 'product.parent_id = parent.id AND product.version_id = parent.version_id')
-//            ->leftJoin('product', 'b2b_order_number', 'b2bOrderNumber', 'product.id = b2bOrderNumber.product_id AND product.version_id = b2bOrderNumber.product_version_id')
-//            ->leftJoin('product', 'product_option', 'productOption', 'product.id = productOption.product_id AND product.version_id = productOption.product_version_id')
-//            ->leftJoin('productOption', 'property_group_option', 'propertyGroupOption', 'productOption.property_group_option_id = propertyGroupOption.id')
-//            ->leftJoin('product', 'product_translation', 'productTranslation', 'product.id = productTranslation.product_id AND product.version_id = productTranslation.product_version_id AND productTranslation.language_id = :languageId')
-//            ->where('product.product_number IN (:productNumbers) OR b2bOrderNumber.custom_ordernumber IN (:productNumbers) OR JSON_UNQUOTE(JSON_EXTRACT(productTranslation.custom_fields, "$.customFieldA")) IN (:productNumbers)')
-//            ->andWhere('IFNULL(product.active, parent.active) = 1')
-//            ->andWhere('product.version_id = :versionId')
-//            ->setParameter('productNumbers', $productOrderNumbers, Connection::PARAM_STR_ARRAY)
-//            ->setParameter('versionId', Uuid::fromHexToBytes(Defaults::LIVE_VERSION))
-//            ->setParameter('languageId', Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM));
         $query = $this->connection->createQueryBuilder()
             ->from('product')
             ->select(
@@ -89,17 +69,20 @@ readonly class ProductService implements ProductServiceInterface
                 'IFNULL(product_name, parent_name) as name',
                 'IFNULL(product.min_purchase, parent.min_purchase) as min_purchase',
                 'IFNULL(product.max_purchase, parent.max_purchase) as max_purchase',
-                'IFNULL(product.purchase_steps, parent.purchase_steps) as purchase_steps'
+                'IFNULL(product.purchase_steps, parent.purchase_steps) as purchase_steps',
+                'JSON_UNQUOTE(JSON_EXTRACT(productTranslation.custom_fields, "$.strack_bestellschluessel_code")) as strack_bestellschluessel_code'
             )
             ->leftJoin('product', 'product', 'parent', 'product.parent_id = parent.id AND product.version_id = parent.version_id')
             ->leftJoin('product', 'b2b_order_number', 'b2bOrderNumber', 'product.id = b2bOrderNumber.product_id AND product.version_id = b2bOrderNumber.product_version_id')
             ->leftJoin('product', 'product_option', 'productOption', 'product.id = productOption.product_id AND product.version_id = productOption.product_version_id')
             ->leftJoin('productOption', 'property_group_option', 'propertyGroupOption', 'productOption.property_group_option_id = propertyGroupOption.id')
-            ->where('product.product_number IN (:productNumbers) OR b2bOrderNumber.custom_ordernumber IN (:productNumbers)')
+            ->leftJoin('product', 'product_translation', 'productTranslation', 'product.id = productTranslation.product_id AND product.version_id = productTranslation.product_version_id AND productTranslation.language_id = :languageId')
+            ->where('product.product_number IN (:productNumbers) OR b2bOrderNumber.custom_ordernumber IN (:productNumbers) OR (JSON_UNQUOTE(JSON_EXTRACT(productTranslation.custom_fields, "$.strack_bestellschluessel_code")) IN (:productNumbers) AND product.parent_id IS NOT NULL)')
             ->andWhere('IFNULL(product.active, parent.active) = 1')
             ->andWhere('product.version_id = :versionId')
             ->setParameter('productNumbers', $productOrderNumbers, Connection::PARAM_STR_ARRAY)
-            ->setParameter('versionId', Uuid::fromHexToBytes(Defaults::LIVE_VERSION));
+            ->setParameter('versionId', Uuid::fromHexToBytes(Defaults::LIVE_VERSION))
+            ->setParameter('languageId', Uuid::fromHexToBytes(Defaults::LANGUAGE_SYSTEM));
 
         $this->addTranslatedFieldSelect(
             $query,
@@ -151,6 +134,8 @@ readonly class ProductService implements ProductServiceInterface
                 'minPurchase' => $product['min_purchase'],
                 'maxPurchase' => $product['max_purchase'],
                 'purchaseStep' => $product['purchase_steps'],
+                'productNumber' => $product['product_number'],
+                'strack_bestellschluessel_code' => $product['strack_bestellschluessel_code']
             ];
         }
 
