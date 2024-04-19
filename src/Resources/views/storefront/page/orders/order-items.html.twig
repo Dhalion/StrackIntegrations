@@ -21,10 +21,10 @@
                                             <br>{{ item.description2|raw }}
                                         {% endif %}
                                     </td>
-                                    <td>{{ item.no }}</td>
-                                    <td>{{ item.quantity }}</td>
+                                    <td>{% if item.no is not empty %}{{ item.no }}{% else %}-{% endif %}</td>
+                                    <td>{% if item.type == 'Item' %}{{ item.quantity }}{% else %}-{% endif %}</td>
 {#                                    <td>{{ lineItem.lineAmount|currency(order.currency) }}</td>#}
-                                    <td>{{ item.lineAmount|currency(decimals=decimals) }}</td>
+                                    <td>{% if item.type == 'Item' %}{{ item.lineAmount|currency(decimals=decimals) }}{% else %}-{% endif %}</td>
                                 </tr>
                             {% endblock %}
                         {% endfor %}
