@@ -28,7 +28,7 @@ readonly class CustomerSubscriber implements EventSubscriberInterface
     public function onCustomerLogin(CustomerLoginEvent $event): void
     {
         $customer = $event->getCustomer();
-        $currencyIsoCode = $customer->getCustomFieldsValue(CustomFieldsInterface::CUSTOMER_CURRENCY_CODE);
+        $currencyIsoCode = $customer->getCustomFieldsValue(CustomFieldsInterface::CUSTOMER_CURRENCY_CODE) ?: 'EUR';
         if (!$currencyIsoCode || !$event->getSalesChannelId()) {
             return;
         }

@@ -18,6 +18,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use StrackIntegrations\Client\PriceClient;
 use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
+use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackIntegrations\Struct\LiveCalculatedPrice;
 use StrackIntegrations\Struct\SalesPrice;
@@ -46,6 +47,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         }
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $customer->getId();
+        $ignoreCall = CustomerErpService::isCustomerActive($customer) === false;
 
         $session = null;
         try {
@@ -54,6 +56,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
 
         if($session && !$this->apiConfig->isTestModeOn() && ($ociSession = $session->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
             $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+            $ignoreCall = CustomerErpService::isCustomerActive($ociSession->getAdditionalFieldByKey('customer')) === false;
         }
 
         $priceBatchPayload = [];
@@ -70,7 +73,7 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
         }
 
         try {
-            $customerPrices = $this->priceClient->getSalesPrices($debtorNumber, $priceBatchPayload, $context->getCurrency()->getIsoCode());
+            $customerPrices = $this->priceClient->getSalesPrices($debtorNumber, $priceBatchPayload, $context->getCurrency()->getIsoCode(), $ignoreCall);
         } catch(\Exception $exception) {
             $this->logger->logException(self::class, $exception);
             return;

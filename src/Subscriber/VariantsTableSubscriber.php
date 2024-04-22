@@ -7,6 +7,7 @@ namespace StrackIntegrations\Subscriber;
 use StrackIntegrations\Client\PriceClient;
 use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Logger\Logger;
+use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackOci\Models\OciSession;
 use StrackVariantsTable\Pagelet\VariantsTableRowsPageletLoadedEvent;
@@ -38,9 +39,11 @@ readonly class VariantsTableSubscriber implements EventSubscriberInterface
         }
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $customer->getId();
+        $ignoreCall = CustomerErpService::isCustomerActive($customer) === false;
 
         if(!$this->apiConfig->isTestModeOn() && ($ociSession = $event->getRequest()->getSession()->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
             $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+            $ignoreCall = CustomerErpService::isCustomerActive($ociSession->getAdditionalFieldByKey('customer')) === false;
         }
 
         $variants = $event->getPagelet()->getVariants();
@@ -52,7 +55,7 @@ readonly class VariantsTableSubscriber implements EventSubscriberInterface
         }
 
         try {
-            $customerPrices = $this->priceClient->getSalesPrices($debtorNumber, $priceRequestBatch, $event->getSalesChannelContext()->getCurrency()->getIsoCode());
+            $customerPrices = $this->priceClient->getSalesPrices($debtorNumber, $priceRequestBatch, $event->getSalesChannelContext()->getCurrency()->getIsoCode(), $ignoreCall);
             $this->priceTransformer->setCalculatedPrices($customerPrices, $variants);
         } catch(\Exception $exception) {
             $this->logger->logException(self::class, $exception);
