@@ -74,7 +74,6 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-
         <service id="StrackIntegrations\Subscriber\CartLoadedSubscriber">
             <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
             <argument type="service" id="translator" />
@@ -175,6 +174,20 @@
         <service id="StrackIntegrations\Core\Framework\DataAbstractionLayer\Search\Term\TokenizerDecoration"
                     decorates="Shopware\Core\Framework\DataAbstractionLayer\Search\Term\Tokenizer">
                 <argument>%shopware.dbal.token_minimum_length%</argument>
+        </service>
+
+        <service id="StrackIntegrations\B2bSuite\Shop\BridgePlatform\ProductService"
+            decorates="b2b_shop.product_service">
+            <argument type="service" id=".inner"/>
+            <argument type="service" id="b2b_shop.context_provider"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="StrackIntegrations\B2bSuite\FastOrder\Framework\FastOrderService" decorates="b2b_fast_order.fast_order_service">
+            <argument id="b2b_common.csv_reader" type="service"/>
+            <argument id="b2b_common.xls_reader" type="service"/>
+            <argument id="b2b_shop.product_service" type="service"/>
+            <argument id="b2b_line_item_list.shop_writer_service" type="service"/>
         </service>
 
 <!--        <service id="StrackIntegrations\Controller\TestController" public="true">-->
