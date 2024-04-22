@@ -12,6 +12,7 @@ use StrackIntegrations\Config\ApiConfig;
 use StrackIntegrations\Exception\MissingDebtorNumberException;
 use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Logger\Logger;
+use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Service\PriceTransformer;
 use StrackIntegrations\Util\CustomFieldsInterface;
 use StrackOci\Models\OciSession;
@@ -47,9 +48,11 @@ class CustomerPriceController extends StorefrontController
 
 
         $debtorNumber = $this->apiConfig->isTestModeOn() ? $this->apiConfig->getTestModeDebtorNumber() : $context->getCustomer()->getId();
+        $ignoreCall = CustomerErpService::isCustomerActive($context->getCustomer()) === false;
 
         if(!$this->apiConfig->isTestModeOn() && ($ociSession = $request->getSession()->get(OciSession::OCI_SESSION_NAME)) && $ociSession instanceof OciSession && $ociSession->getAdditionalFieldByKey('customer')) {
             $debtorNumber = $ociSession->getAdditionalFieldByKey('customer')->getId();
+            $ignoreCall = CustomerErpService::isCustomerActive($ociSession->getAdditionalFieldByKey('customer')) === false;
         }
 
         if(!$debtorNumber) {
@@ -61,7 +64,7 @@ class CustomerPriceController extends StorefrontController
 
         $product = $page->getProduct();
 
-        $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $context->getCurrency()->getIsoCode(), $quantity);
+        $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $context->getCurrency()->getIsoCode(), $quantity, $ignoreCall);
         $this->priceTransformer->setCalculatedPrice($customerPrice, $product);
 
         $template = $isComponent ?

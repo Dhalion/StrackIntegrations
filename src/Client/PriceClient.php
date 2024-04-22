@@ -14,15 +14,24 @@ readonly class PriceClient extends AbstractClient
     /**
      * @param array<string, int> $productNumbers Key: product number, value: quantity
      */
-    public function getSalesPrices(string $debtorNumber, array $productNumbers, string $currencyIso): SalesPriceCollection
+    public function getSalesPrices(string $debtorNumber, array $productNumbers, string $currencyIso, bool $ignoreCall = false): SalesPriceCollection
     {
+        if ($ignoreCall) {
+            $salesPriceCollection = new SalesPriceCollection();
+            foreach($productNumbers as $productNumber => $quantity) {
+                $salesPriceCollection->add(SalesPrice::createErrorSalesPrice((string)$productNumber));
+            }
+
+            return $salesPriceCollection;
+        }
+
         $requestData = [];
 
         foreach($productNumbers as $productNumber => $quantity) {
             $requestData[] = [
                'customerId' => $debtorNumber,
                'itemNo' => (string)$productNumber,
-               'currencyIso' => $currencyIso,
+               'currencyCode' => $currencyIso,
                'quantity' => $quantity
             ];
         }
@@ -91,8 +100,12 @@ readonly class PriceClient extends AbstractClient
         return $salesPriceCollection;
     }
 
-    public function getSalesPrice(string $debtorNumber, string $productNumber, string $currencyIso, int $quantity = 1): ?SalesPrice
+    public function getSalesPrice(string $debtorNumber, string $productNumber, string $currencyIso, int $quantity = 1, bool $ignoreCall = false): ?SalesPrice
     {
+        if ($ignoreCall) {
+            return SalesPrice::createErrorSalesPrice($productNumber);
+        }
+
         try {
             $response = $this->post(
                 $this->apiConfig->getPriceEndpoint(),
@@ -101,7 +114,7 @@ readonly class PriceClient extends AbstractClient
                 [
                     'customerId' => $debtorNumber,
                     'itemNo' => $productNumber,
-                    'currencyIso' => $currencyIso,
+                    'currencyCode' => $currencyIso,
                     'quantity' => $quantity
                 ]
             );
