@@ -7,6 +7,7 @@ namespace StrackIntegrations\Util;
 interface CustomFieldsInterface
 {
     // Customer custom fields
+    public const CUSTOMER_ERP_ACTIVE = 'custom_erp_freigabe';
     public const CUSTOMER_CUSTOM_FIELD_SET = 'strack_integrations_customer';
     public const CUSTOMER_MINIMUM_ORDER_VALUE = 'strack_customer_minimum_order_value';
     public const CUSTOMER_CURRENCY_CODE = 'custom_currency_iso_code';
