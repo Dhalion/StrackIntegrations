@@ -9,6 +9,8 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use StrackIntegrations\Exception\CustomerNotActiveInErpException;
+use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Struct\LiveCalculatedPrice;
 use StrackIntegrations\Util\CustomFieldsInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,6 +35,10 @@ readonly class OrderSubscriber implements EventSubscriberInterface
 
     public function onCartConvertedEvent(CartConvertedEvent $event): void
     {
+        if (!CustomerErpService::isCustomerActive($event->getSalesChannelContext()->getCustomer())) {
+            throw new CustomerNotActiveInErpException();
+        }
+
         $request = $this->requestStack->getCurrentRequest();
 
         if(!$request) {
