@@ -1,0 +1,26 @@
+.module-fastorder {
+
+  // B2B loader
+  .b2b--ajax-panel.has--b2b-form {
+    .content--loading {
+      background: none;
+      border-radius: 50%;
+      //display: none;
+      transform: none;
+      left: 50%;
+      top: 50%;
+      margin-left: -$spacer;
+      margin-top: -$spacer;
+      width: 26px;
+      height: 26px;
+
+      &::before,
+      span:not(.sr-only) {
+        display: none;
+      }
+
+      @extend .loader;
+      position: fixed;
+    }
+  }
+}
