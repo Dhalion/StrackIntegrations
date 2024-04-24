@@ -24,7 +24,9 @@
 
                         {% block b2b_order_filter_form_from_date %}
                             <label class="me-1">
-                                {{ 'StrackIntegrations.customer.orders.filter.fromDate' | trans | sw_sanitize }}
+                                {% block b2b_order_filter_form_from_date_label %}
+                                    {{ 'StrackIntegrations.customer.orders.filter.fromDate' | trans | sw_sanitize }}
+                                {% endblock %}
                                 <input type="text"
                                        name="orderFrom"
                                        class="customDate form-control-sm"
@@ -36,7 +38,9 @@
                         {% endblock %}
                         {% block b2b_order_filter_form_to_date %}
                             <label class="me-1">
-                                {{ 'StrackIntegrations.customer.orders.filter.toDate' | trans | sw_sanitize }}
+                                {% block b2b_order_filter_form_to_date_label %}
+                                    {{ 'StrackIntegrations.customer.orders.filter.toDate' | trans | sw_sanitize }}
+                                {% endblock %}
                                 <input type="text"
                                        name="orderTo"
                                        class="customDate form-control-sm"
@@ -110,7 +114,9 @@
                                         <div class="row">
                                             {% block b2b_order_search_results_sorting_buttons_order_no %}
                                                 <div class="col">
-                                                    {{ "StrackIntegrations.customer.orders.sorting.orderNumber"|trans|sw_sanitize }}
+                                                    {% block b2b_order_search_results_sorting_buttons_order_no_label %}
+                                                        {{ "StrackIntegrations.customer.orders.sorting.orderNumber"|trans|sw_sanitize }}
+                                                    {% endblock %}
                                                     <button type="button"
                                                             class="btn-sort"
                                                             data-sorting-type="by-order-number"

@@ -14,7 +14,20 @@
     </h1>
 {% endblock %}
 
-{# Changed alert messages #}
+{# Changed sorting labels #}
+{% block b2b_order_search_results_sorting_buttons_order_no_label %}
+    {{ "StrackIntegrations.customer.offers.sorting.orderNumber"|trans|sw_sanitize }}
+{% endblock %}
+
+{# Changed filter labels #}
+{% block b2b_order_filter_form_from_date_label %}
+    {{ 'StrackIntegrations.customer.offers.filter.fromDate' | trans | sw_sanitize }}
+{% endblock %}
+{% block b2b_order_filter_form_to_date_label %}
+    {{ 'StrackIntegrations.customer.offers.filter.toDate' | trans | sw_sanitize }}
+{% endblock %}
+
+{# Changed alert messages snippet #}
 {% block b2b_order_list_empty %}
     <div class="py-2">
         {% if page.isSuccess %}
