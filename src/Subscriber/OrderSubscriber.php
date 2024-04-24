@@ -93,7 +93,6 @@ readonly class OrderSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $orderIsOffer = (bool)$request->get('orderIsOffer');
         $orderRequestedDeliveryDate = $request->get(CustomFieldsInterface::ORDER_REQUESTED_DELIVERY_DATE);
         $orderIsPartialDelivery = $request->get(CustomFieldsInterface::ORDER_IS_PARTIAL_DELIVERY) === 'on';
         $orderOwnOrderNumber = substr($request->get(CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER, ''), 0, CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER_MAX_LENGTH);
@@ -105,10 +104,9 @@ readonly class OrderSubscriber implements EventSubscriberInterface
         }
 
         $order = $event->getOrder();
-        $isOffer = $orderIsOffer || $this->hasPriceError($order->getLineItems());
 
         $customFields = [
-            CustomFieldsInterface::ORDER_IS_OFFER => $isOffer,
+            CustomFieldsInterface::ORDER_IS_OFFER => (bool)$request->get('orderIsOffer'),
             CustomFieldsInterface::ORDER_REQUESTED_DELIVERY_DATE => $orderRequestedDeliveryDate,
             CustomFieldsInterface::ORDER_IS_PARTIAL_DELIVERY => $orderIsPartialDelivery,
             CustomFieldsInterface::ORDER_OWN_ORDER_NUMBER => $orderOwnOrderNumber,
