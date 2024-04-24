@@ -12,6 +12,13 @@
             "offers": {
                 "error": {
                     "noOrderResponse": "Your offers currently can't be accessed."
+                },
+                "filter": {
+                    "fromDate": "Earliest Offer Date:",
+                    "toDate": "Latest Offer Date:"
+                },
+                "sorting": {
+                    "orderNumber": "Offer number"
                 }
             },
             "orders": {

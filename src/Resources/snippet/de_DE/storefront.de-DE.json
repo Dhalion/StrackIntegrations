@@ -12,6 +12,13 @@
             "offers": {
                 "error": {
                     "noOrderResponse": "Ihre Angebote können aktuell nicht abgerufen werden."
+                },
+                "filter": {
+                    "fromDate": "Frühestes Angebotsdatum:",
+                    "toDate": "Spätestes Angebotsdatum:"
+                },
+                "sorting": {
+                    "orderNumber": "Angebotsnummer"
                 }
             },
             "orders": {
@@ -30,8 +37,8 @@
                 "b2bOrderStatusShipped": "Versendet",
                 "b2bPositionStatusInProcess": "Teillieferung",
                 "b2bPositionStatusOpen": "Offen",
-                "b2bPositionStatusShipped": "Geliefert",
-                "completelyShipped": "Komplett geliefert",
+                "b2bPositionStatusShipped": "Gesendet",
+                "completelyShipped": "Komplett gesendet",
                 "documents": {
                     "invoiceTitle": "Rechnungen",
                     "deliveryTitle": "Lieferungen",
