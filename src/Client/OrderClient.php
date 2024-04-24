@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace StrackIntegrations\Client;
 
 use GuzzleHttp\Exception\BadResponseException;
-use Symfony\Contracts\Cache\ItemInterface;
 
 readonly class OrderClient extends AbstractClient
 {
@@ -79,41 +78,33 @@ readonly class OrderClient extends AbstractClient
 
     public function getContactNumber(string $customerNumber): ?string
     {
-        return $this->cache->get(
-            sprintf('contact-response-%s', $customerNumber),
-            function (ItemInterface $item) use ($customerNumber) {
-                $item->expiresAfter(0);
+        try {
+            $response = $this->get(
+                sprintf(
+                    '%s?$filter=bfnSWCode eq \'%s\'',
+                    $this->apiConfig->getContactEndpoint(),
+                    $customerNumber,
+                ),
+            );
+        } catch (\Exception $exception) {
+            $this->logger->logException(self::class, $exception);
+            return null;
+        }
 
-                try {
-                    $response = $this->get(
-                        sprintf(
-                            '%s?$filter=bfnSWCode eq \'%s\'',
-                            $this->apiConfig->getContactEndpoint(),
-                            $customerNumber,
-                        ),
-                    );
-                } catch (\Exception $exception) {
-                    $this->logger->logException(self::class, $exception);
-                    return null;
-                }
+        if (!isset($response[0]['bfnSWContactNo']) || !$response[0]['bfnSWContactNo']) {
+            $exception = new \Exception(
+                sprintf(
+                    'bfnSWContactNo is not present in response: %s for customer: %s',
+                    json_encode($response),
+                    $customerNumber,
+                ),
+            );
 
-                if (!isset($response[0]['bfnSWContactNo']) || !$response[0]['bfnSWContactNo']) {
-                    $exception = new \Exception(
-                        sprintf(
-                            'bfnSWContactNo is not present in response: %s for customer: %s',
-                            json_encode($response),
-                            $customerNumber,
-                        ),
-                    );
+            $this->logger->logException(self::class, $exception);
+            return null;
+        }
 
-                    $this->logger->logException(self::class, $exception);
-                    return null;
-                }
-
-                $item->expiresAfter(86400);
-                return $response[0]['bfnSWContactNo'];
-            },
-        );
+        return $response[0]['bfnSWContactNo'];
     }
 
     private function buildErrorResponse(BadResponseException|\Exception $exception): array
