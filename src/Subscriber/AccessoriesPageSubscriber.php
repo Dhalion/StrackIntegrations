@@ -55,6 +55,9 @@ readonly class AccessoriesPageSubscriber implements EventSubscriberInterface
 
         if($machineProducts->count() > 0) {
             foreach($machineProducts as $product) {
+                if(PriceClient::shouldPreventLivePrice($product->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD))) {
+                    continue;
+                }
                 $priceRequestBatch[$product->getProductNumber()] = $product->getMinPurchase() ?: 1;
             }
         }
@@ -62,6 +65,9 @@ readonly class AccessoriesPageSubscriber implements EventSubscriberInterface
         $lightProducts = $event->getPage()->getLightSelectedProducts()->getAllSalesChannelProducts();
         if($lightProducts->count() > 0) {
             foreach($lightProducts as $product) {
+                if(PriceClient::shouldPreventLivePrice($product->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD))) {
+                    continue;
+                }
                 $priceRequestBatch[$product->getProductNumber()] = $product->getMinPurchase() ?: 1;
             }
         }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Controller;
 
+use PhpOffice\PhpSpreadsheet\Calculation\Financial\Securities\Price;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Product\ProductPageLoader;
@@ -63,6 +64,10 @@ class CustomerPriceController extends StorefrontController
         $page = $this->productPageLoader->load($request, $context);
 
         $product = $page->getProduct();
+
+        if (!$ignoreCall) {
+            $ignoreCall = PriceClient::shouldPreventLivePrice($product->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD));
+        }
 
         $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $context->getCurrency()->getIsoCode(), $quantity, $ignoreCall);
         $this->priceTransformer->setCalculatedPrice($customerPrice, $product);

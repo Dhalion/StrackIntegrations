@@ -51,6 +51,9 @@ readonly class VariantsTableSubscriber implements EventSubscriberInterface
         $priceRequestBatch = [];
 
         foreach($variants as $variant) {
+            if(PriceClient::shouldPreventLivePrice($variant->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD))) {
+                continue;
+            }
             $priceRequestBatch[$variant->getProductNumber()] = $variant->getMinPurchase() ?: 1;
         }
 
