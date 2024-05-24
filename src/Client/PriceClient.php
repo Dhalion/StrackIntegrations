@@ -34,7 +34,8 @@ readonly class PriceClient extends AbstractClient
                'customerId' => $debtorNumber,
                'itemNo' => (string)$productNumber,
                'currencyCode' => $currencyIso,
-               'quantity' => $quantity
+               'quantity' => $quantity,
+               'includingVAT' => false
             ];
         }
 
@@ -117,7 +118,8 @@ readonly class PriceClient extends AbstractClient
                     'customerId' => $debtorNumber,
                     'itemNo' => $productNumber,
                     'currencyCode' => $currencyIso,
-                    'quantity' => $quantity
+                    'quantity' => $quantity,
+                    'includingVAT' => false
                 ]
             );
         } catch(\Exception $exception) {
