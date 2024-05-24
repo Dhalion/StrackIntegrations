@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace StrackIntegrations\Controller;
 
-use PhpOffice\PhpSpreadsheet\Calculation\Financial\Securities\Price;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Storefront\Page\Product\ProductPageLoader;
@@ -15,7 +14,6 @@ use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Service\PriceTransformer;
-use StrackIntegrations\Util\CustomFieldsInterface;
 use StrackOci\Models\OciSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
