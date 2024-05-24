@@ -65,7 +65,10 @@ readonly class CustomerPriceProcessor implements CartDataCollectorInterface, Car
             $productNumber = (string)$lineItem->getPayloadValue('productNumber');
             $price = $lineItem->getPrice();
 
-            if (!$productNumber || !$price || $lineItem->getType() !== LineItem::PRODUCT_LINE_ITEM_TYPE) {
+            if (!$productNumber
+                || !$price
+                || $lineItem->getType() !== LineItem::PRODUCT_LINE_ITEM_TYPE
+                || PriceClient::shouldPreventLivePrice($lineItem->getPayloadValue('customFields')[PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD] ?? null)) {
                 continue;
             }
 

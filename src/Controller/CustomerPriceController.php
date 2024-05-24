@@ -14,7 +14,6 @@ use StrackIntegrations\Exception\MissingParameterException;
 use StrackIntegrations\Logger\Logger;
 use StrackIntegrations\Service\CustomerErpService;
 use StrackIntegrations\Service\PriceTransformer;
-use StrackIntegrations\Util\CustomFieldsInterface;
 use StrackOci\Models\OciSession;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,6 +62,10 @@ class CustomerPriceController extends StorefrontController
         $page = $this->productPageLoader->load($request, $context);
 
         $product = $page->getProduct();
+
+        if (!$ignoreCall) {
+            $ignoreCall = PriceClient::shouldPreventLivePrice($product->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD));
+        }
 
         $customerPrice = $this->priceClient->getSalesPrice($debtorNumber, $product->getProductNumber(), $context->getCurrency()->getIsoCode(), $quantity, $ignoreCall);
         $this->priceTransformer->setCalculatedPrice($customerPrice, $product);
