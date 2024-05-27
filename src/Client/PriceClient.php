@@ -11,6 +11,8 @@ use StrackIntegrations\Struct\SalesPriceCollection;
 
 readonly class PriceClient extends AbstractClient
 {
+    public const SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD = 'strack_prevent_live_prices';
+
     /**
      * @param array<string, int> $productNumbers Key: product number, value: quantity
      */
@@ -159,6 +161,11 @@ readonly class PriceClient extends AbstractClient
             ->setIsBrutto($jsonResponse['Prices Including VAT'])
             ->setCurrencyIso($jsonResponse['Currency Code'])
             ->setHasError($jsonResponse['Unit Price'] <= 0);
+    }
+
+    public static function shouldPreventLivePrice(string|int|null $customFieldValue): bool
+    {
+        return $customFieldValue === 0 || $customFieldValue === "0";
     }
 
     private function getSalesPriceEnvelope(): string

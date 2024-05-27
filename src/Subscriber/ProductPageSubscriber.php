@@ -48,6 +48,10 @@ readonly class ProductPageSubscriber implements EventSubscriberInterface
 
         $product = $event->getPage()->getProduct();
 
+        if (!$ignoreCall) {
+            $ignoreCall = PriceClient::shouldPreventLivePrice($product->getCustomFieldsValue(PriceClient::SHOULD_DO_LIVE_PRICE_CUSTOM_FIELD));
+        }
+
         $startingQuantity = $product->getMinPurchase() ?: 1;
 
         try {
